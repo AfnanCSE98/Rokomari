@@ -6,8 +6,27 @@ from django.urls import reverse
 from django.db import connection
 from .forms import *
 from django.forms.formsets import formset_factory
+import cx_Oracle
 
 # Create your views here.
+def Max_CustomerID(self):
+    print("hi")
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute('''select *
+                        from "MYSELF"."CUSTOMER" ''')
+            print("helo")
+        except cx_Oracle.Error as e:
+            print("as")
+            print(e)
+
+    print(self.cursor.rowcount())
+    res=cursor.fetchall()
+    print(res)
+
+    # for i in result:
+    #     max = int(i[0])
+    return res[0]
 
 def authenticate(username, password):
     with connection.cursor() as cursor:
@@ -36,13 +55,13 @@ def index(request):
         return render(request , 'books/index.html' , {'form':form})
 
 
-def CreateCustomer(username , email , mobile , address):
+def CreateCustomer(id,username , email , mobile , address):
 
     with connection.cursor() as cursor:
 
         cursor.execute('''
                         INSERT INTO "MYSELF"."CUSTOMER"(ID , MOBILE , ADDRESS , EMAIL ,  NAME)
-                        VALUES(25 ,%s , %s , %s , (%s))
+                        VALUES(id ,%s , %s , %s , (%s))
                         ''' ,
                        [mobile , address , email , username])
 
@@ -54,7 +73,8 @@ def signup(request):
             email = form.cleaned_data['email']
             mobile  =form.cleaned_data['mobile']
             address = form.cleaned_data['address']
-            CreateCustomer( username, email, mobile, address)
+            id = Max_CustomerID()
+            CreateCustomer(id+1, username, email, mobile, address)
 
 
             #request.session['username'] = username
