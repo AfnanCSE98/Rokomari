@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+{% extends "books/base.html" %}
+{% load static %}
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        <p>{{username}}</p>
+
+    {% endblock %}
