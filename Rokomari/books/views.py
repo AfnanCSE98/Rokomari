@@ -7,38 +7,70 @@ from django.db import connection
 from .forms import *
 from django.forms.formsets import formset_factory
 import cx_Oracle
+import os
+
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Rokomari.settings')
+
+django.setup()
 
 # Create your views here.
-def Max_CustomerID(self):
-    print("hi")
-    with connection.cursor() as cursor:
-        try:
-            cursor.execute('''select *
-                        from "MYSELF"."CUSTOMER" ''')
-            print("helo")
-        except cx_Oracle.Error as e:
-            print("as")
-            print(e)
+def Max_CustomerID():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
 
-    print(self.cursor.rowcount())
+    try:
+        cursor.execute('''select MAX(ID)
+                    from "MYSELF"."CUSTOMER" ''')
+
+    except cx_Oracle.Error as e:
+        print(e)
+
+
     res=cursor.fetchall()
-    print(res)
-
-    # for i in result:
-    #     max = int(i[0])
-    return res[0]
+    print(res[0][0])
+    conn.close()
+    return res[0][0]
 
 def authenticate(username, password):
     with connection.cursor() as cursor:
 
         cursor.execute('''select * from "MYSELF"."CUSTOMER" where NAME=%s''', [username])
-        row = cursor.fetchone()
+        row = dictfetchall(cursor)
+        for user in row:
+            if(user['PASSWORD']==password):
+                return True
+        return False
 
-        if row is not None:
-            print(row)
-            return True
-        else:
-            return False
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+def All_Customers():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''
+                        select * from MYSELF.CUSTOMER
+                        ''')
+    customers = dictfetchall(cursor)
+    # print(len(customers))
+    # for user in customers:
+    #     print(user['NAME'])
+    conn.close()
+    return customers
+def Get_Cureent_Customer(all_customer , username):
+    "all_customer have all the customers"
+    "we return current customer from this list"
+    for user in all_customer:
+        if(user['NAME']==username):
+            return user
+
 def index(request):
     if request.method=="POST":
         form = LoginForm(request.POST)
@@ -46,40 +78,49 @@ def index(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             if authenticate(username, password):
-                return render(request, 'books/home.html', {'username': username})
+                all_customers = All_Customers()
+                current_customer = Get_Cureent_Customer(all_customers , username)
+                current_customer['login_message'] = "Login Successful! Congratulations"
+                return render(request, 'books/home.html', current_customer)
             else:
                 form = LoginForm()
-                return render(request, 'books/index.html', {'form': form})
+                dict = {}
+                dict['login_message'] = "Login Failed! Sorry"
+                dict['form'] = form
+                return render(request, 'books/index.html', dict)
     else:
         form = LoginForm()
         return render(request , 'books/index.html' , {'form':form})
 
 
-def CreateCustomer(id,username , email , mobile , address):
-
-    with connection.cursor() as cursor:
-
-        cursor.execute('''
-                        INSERT INTO "MYSELF"."CUSTOMER"(ID , MOBILE , ADDRESS , EMAIL ,  NAME)
-                        VALUES(id ,%s , %s , %s , (%s))
-                        ''' ,
-                       [mobile , address , email , username])
+def CreateCustomer(id,username , email , mobile , address , password):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''
+                    INSERT INTO MYSELF.CUSTOMER(ID , MOBILE , ADDRESS , EMAIL ,  NAME , PASSWORD)
+                    VALUES(:id,:mobile,:address,:email,:username,:password )
+                    ''',[id, mobile, address, email, username , password])
+    conn.commit()
+    conn.close()
 
 def signup(request):
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
             email = form.cleaned_data['email']
-            mobile  =form.cleaned_data['mobile']
+            mobile  = form.cleaned_data['mobile']
             address = form.cleaned_data['address']
             id = Max_CustomerID()
-            CreateCustomer(id+1, username, email, mobile, address)
+            id = id+1
+            CreateCustomer(id, username, email, mobile, address , password)
 
-
-            #request.session['username'] = username
-            # return HttpResponseRedirect(reverse('books:home'))
-            return render(request , 'books/home.html' , {'username':username})
+            all_customers = All_Customers()
+            current_customer = Get_Cureent_Customer(all_customers, username)
+            current_customer['login_message'] = "Congratulations! Sign Up Successful"
+            return render(request , 'books/home.html' , current_customer)
     else:
         form = UserForm()
     return render(request, 'books/signup.html', {'form': form})

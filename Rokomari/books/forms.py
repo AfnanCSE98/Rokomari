@@ -26,5 +26,6 @@ class UserForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField()
-    password = forms.CharField()
+    username = forms.CharField( widget=forms.TextInput())
+    password = forms.CharField(widget=forms.PasswordInput())
+
