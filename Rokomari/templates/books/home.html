@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
 
   <!-- Modal content -->
-      <div id="myModal" class="modal">
+                <div id="myModal" class="modal">
           <div class="modal-content">
             <span class="close">&times;</span>
             <p>{{ login_message }}</p>
@@ -35,6 +35,15 @@
           }
         }
       </script>
-         <p style="font-size: 30px ; text-align:right;font-family: 'Comic Sans MS',serif ">{{NAME}}</p>
 
+         <p style="font-size: 30px ; text-align:right;font-family: 'Comic Sans MS',serif ">{{NAME}}</p>
+         <a class="txt2" href={% url 'books:book_category' %}>
+             Category
+             <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i></a>
+         <a class="txt2" href={% url 'books:book_author' %}>
+             Author
+             <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i></a>
+         <a class="txt2" href={% url 'books:book_publisher' %}>
+             Publisher
+             <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i></a>
     {% endblock %}

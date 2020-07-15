@@ -1,0 +1,19 @@
+{% extends "books/base.html" %}
+{% load static %}
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        <p style="font-size: 30px ; text-align:right;font-family: 'Comic Sans MS',serif ">{{NAME}}</p>
+        <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Category : {{category_name}}</p>
+        {% if book %}
+            {% for item in book %}
+                {{ forloop.counter }}  {{ item.TITLE}}
+                <br>Author : {{ item.AUTHOR_NAME}}
+                <br>Price : {{ item.PRICE }}
+                <br>Publisher : {{ item.PUBLISHER_NAME }}
+                <br><br>
+            {% endfor %}
+        {% endif %}
+
+    {% endblock %}
