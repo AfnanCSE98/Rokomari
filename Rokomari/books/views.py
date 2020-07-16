@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db import connection
 from .forms import *
+from django.shortcuts import redirect
 from django.forms.formsets import formset_factory
 import cx_Oracle
 
@@ -14,28 +15,23 @@ def Max_CustomerID():
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
 
-    try:
-        cursor.execute('''select MAX(ID)
-                    from "MYSELF"."CUSTOMER" ''')
-
-    except cx_Oracle.Error as e:
-        print(e)
-
+    cursor.execute('''select MAX(ID)
+                from "MYSELF"."USER" ''')
 
     res=cursor.fetchall()
-    print(res[0][0])
     conn.close()
     return res[0][0]
 
 def authenticate(username, password):
-    with connection.cursor() as cursor:
-
-        cursor.execute('''select * from "MYSELF"."CUSTOMER" where NAME=%s''', [username])
-        row = dictfetchall(cursor)
-        for user in row:
-            if(user['PASSWORD']==password):
-                return True
-        return False
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''select * from "MYSELF"."USER" where NAME=:username''', [username])
+    row = dictfetchall(cursor)
+    for user in row:
+        if(user['PASSWORD']==password):
+            return True
+    return False
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
@@ -49,8 +45,8 @@ def All_Customers():
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
     cursor.execute('''
-                        select * from MYSELF.CUSTOMER
-                        ''')
+                        select * from "MYSELF"."USER" where "ACCOUNT TYPE"=:customer
+                        ''' , ['customer'])
     customers = dictfetchall(cursor)
     conn.close()
     return customers
@@ -65,22 +61,24 @@ def book_category(request):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    "First, we import the current user information"
     dict={}
-    # dict['NAME'] = request.session.get('username')
-    # dict["ID"] = request.session['id']
-    # dict['MOBILE'] = request.session['mobile']
-    # dict['EMAIL'] = request.session['email']
-    # dict['ADDRESS'] = request.session['address']
-    # dict['PASSWORD'] = request.session['password']
-    "Now do our query"
     cursor.execute(
         '''select * from MYSELF.CATEGORY'''
     )
     res = dictfetchall(cursor)
+    conn.close()
     ctg_ID=[x['ID'] for x in res]
     ctg_NAME=[x['NAME'] for x in res]
-    dict['category'] = [(x[0] , x[1]) for x in zip(ctg_ID , ctg_NAME) ]
+    dict['category'] = [(x[0] , x[1]) for x in zip(ctg_ID , ctg_NAME)]
+    "storing current customer information"
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+
     return render(request , 'books/book_category.html' , dict)
 def Get_Author_Name(author_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
@@ -134,7 +132,15 @@ def book_category_details(request , ctg_id):
     dict={}
     dict['book']=res
     dict['category_name'] = Get_Category_Name(ctg_id)
-    print(dict)
+    "Storing current customer information"
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+
     return render(request , 'books/book_category_details.html' , dict)
 
 def book_author(request):
@@ -151,6 +157,16 @@ def book_author(request):
     author_name = [x['NAME'] for x in res]
     dict = {}
     dict['author'] = [(x[0], x[1]) for x in zip(author_id, author_name)]
+
+    "Storing current customer information"
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+
     return render(request  , 'books/book_author.html' , dict)
 
 def book_author_details(request , author_id):
@@ -169,8 +185,18 @@ def book_author_details(request , author_id):
     dict = {}
     dict['book'] = res
     dict['author_name'] = Get_Author_Name(author_id)
-    print(dict)
+
+    "Storing current customer information"
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+
     return render(request, 'books/book_author_details.html', dict)
+
 def book_publisher(request ):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -185,6 +211,15 @@ def book_publisher(request ):
     pub_name = [x['NAME'] for x in res]
     dict={}
     dict['publisher'] = [(x[0], x[1]) for x in zip(pub_id, pub_name)]
+    "Storing current user information"
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+
     return render(request , 'books/book_publisher.html' , dict)
 
 def book_publisher_details(request , pub_id):
@@ -203,7 +238,14 @@ def book_publisher_details(request , pub_id):
     dict = {}
     dict['book'] = res
     dict['publisher_name'] = Get_Publisher_Name(pub_id)
-    print(dict)
+    "Storing current user information"
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
     return render(request , 'books/book_publisher_details.html' , dict)
 
 def index(request):
@@ -216,11 +258,18 @@ def index(request):
 
                 all_customers = All_Customers()
                 dict = Get_Cureent_Customer(all_customers , username)
-                dict['login_message'] = "Login Successful! Welcome, "+username
 
-                # request.session['username'] = username
+                request.session['username'] = dict['NAME']
+                request.session['id'] = dict["ID"]
+                request.session['mobile'] = dict['MOBILE']
+                request.session['email'] = dict['EMAIL']
+                request.session['address'] = dict['ADDRESS']
+                request.session['password'] = dict['PASSWORD']
+                request.session['account_type'] = dict['ACCOUNT TYPE']
+                request.session['login_message'] = "Login Successful! Welcome, "+dict['NAME']
+                return redirect('/home/')
                 # return HttpResponseRedirect(reverse('books:home'))
-                return render(request, 'books/home.html', dict)
+                # return render(request, 'books/home.html', dict)
             else:
                 form = LoginForm()
                 dict = {}
@@ -231,14 +280,14 @@ def index(request):
         form = LoginForm()
         return render(request , 'books/index.html' , {'form':form})
 
-def CreateCustomer(id,username , email , mobile , address , password):
+def CreateCustomer(id,username , email , mobile , address , password , account_type):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
     cursor.execute('''
-                    INSERT INTO MYSELF.CUSTOMER(ID , MOBILE , ADDRESS , EMAIL ,  NAME , PASSWORD)
-                    VALUES(:id,:mobile,:address,:email,:username,:password )
-                    ''',[id, mobile, address, email, username , password])
+                    INSERT INTO MYSELF.USER(ID , MOBILE , ADDRESS , EMAIL ,  NAME , PASSWORD , ACCOUNT TYPE)
+                    VALUES(:id,:mobile,:address,:email,:username,:password ,:account_type)
+                    ''',[id, mobile, address, email, username , password , account_type])
     conn.commit()
     conn.close()
 
@@ -263,22 +312,29 @@ def signup(request):
         form = UserForm()
     return render(request, 'books/signup.html', {'form': form})
 
-def home(request ):
-    username = request.session.get('username')
-    dict={}
-    dict['NAME'] = username
-    dict['login_message'] = "Login Successful! Welcome, "+username
-    print(username)
-    return render(request, 'books/home.html', dict)
+# def home(request ):
+#     username = request.session.get('username')
+#     dict={}
+#     dict['NAME'] = username
+#     dict['login_message'] = "Login Successful! Welcome, "+username
+#     print(username)
+#     return render(request, 'books/home.html', dict)
 
     # return render(request , 'books/home.html' , dict)
-# def home(request):
-#     if request.session.has_key('username'):
-#         username = request.session.get('username')
-#         print("hi")
-#         return render(request, 'books/home.html', {'username': username})
-#     else:
-#         print("home session not found")
-#         # form = LoginForm()
-#         # return render(request, 'books/index.html' , {'form':form})
-#         # # return index(request)
+def home(request):
+    if request.session.has_key('username'):
+        dict={}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['login_message'] = request.session.get('login_message')
+        return render(request, 'books/home.html', dict)
+    else:
+        print("home session not found")
+        form = LoginForm()
+        return render(request, 'books/index.html' , {'form':form})
+        # # return index(request)
