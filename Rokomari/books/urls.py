@@ -13,4 +13,5 @@ urlpatterns = [
     path('author/<int:author_id>/' , views.book_author_details , name='book_author_details'),
     path('publisher/' , views.book_publisher , name = 'book_publisher'),
     path('publisher/<int:pub_id>' , views.book_publisher_details , name = 'book_publisher_details'),
+    path('user-profile' , views.user_profile , name='user_profile')
 ]

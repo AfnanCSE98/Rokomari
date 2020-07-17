@@ -1,49 +1,39 @@
+
 <!DOCTYPE html>
 {% extends "books/base.html" %}
 {% load static %}
 
-    {% block body_block%}
+   {% block body_block%}
 
-    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+       <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="">Books<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href={% url 'books:book_category' %}>Category</a></li>
+              <li><a href={% url 'books:book_author' %}>Author</a></li>
+              <li><a href={% url 'books:book_publisher' %}>Publisher</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Electronics</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% if not username %}
+          <li><a href={% url 'books:signup' %}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href={% url 'books:index' %}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+             {% elif username %}
+              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="">{{username}}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href={% url 'books:user_profile' %}>Profile</a></li>
+                </ul>
+              </li>
+            {% endif %}
+        </ul>
+  </div>
+</nav>
 
-  <!-- Modal content -->
-                <div id="myModal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>{{ login_message }}</p>
-          </div>
-      </div>
-      <script>
-// Get the modal
-        var modal = document.getElementById("myModal");
 
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user login fails/succeeds, open the modal
-        modal.style.display = "block";
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-          modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-          if (event.target == modal) {
-            modal.style.display = "none";
-          }
-        }
-      </script>
-
-         <p style="font-size: 30px ; text-align:right;font-family: 'Comic Sans MS',serif ">{{ username }}</p>
-         <a class="txt2" href={% url 'books:book_category' %}>
-             Category
-             <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i></a>
-         <a class="txt2" href={% url 'books:book_author' %}>
-             Author
-             <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i></a>
-         <a class="txt2" href={% url 'books:book_publisher' %}>
-             Publisher
-             <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i></a>
     {% endblock %}
+
+
+
