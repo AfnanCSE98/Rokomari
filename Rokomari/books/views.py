@@ -92,7 +92,6 @@ def Get_Author_Name(author_id):
     res = dictfetchall(cursor)
     conn.close()
     return res[0]['NAME']
-
 def Get_Publisher_Name(publisher_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -104,7 +103,6 @@ def Get_Publisher_Name(publisher_id):
     res = dictfetchall(cursor)
     conn.close()
     return res[0]['NAME']
-
 def Get_Category_Name(ctg_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -206,7 +204,6 @@ def book_author_details(request , author_id):
         form = LoginForm()
         return render(request, 'books/index.html', {'form': form})
 
-
 def book_publisher(request ):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -261,7 +258,6 @@ def book_publisher_details(request , pub_id):
     else:
         form = LoginForm()
         return render(request, 'books/index.html', {'form': form})
-
 
 def index(request):
     if request.method=="POST":
@@ -333,17 +329,20 @@ def signup(request):
     else:
         form = UserForm()
     return render(request, 'books/signup.html', {'form': form})
+
 def Update_Customer(id,username, email, mobile, address, password):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    #str = "UPDATE MYSELF.USER SET NAME=:username , EMAIL=:email , MOBILE=:mobile , ADDRESS=:address , PASSWORD=:password WHERE ID=:id"
 
     cursor.execute(
-        'DELETE from "MYSELF"."USER" where ID=:id'
-         , [id]
+        '''delete from "MYSELF"."USER" where ID=:id'''
+        ,[id]
     )
+    conn.commit()
+    conn.close()
     CreateCustomer(id,username,email,mobile,address,password,'Customer')
+    print('updateddd')
 
 def user_profile(request):
     if request.method == "POST":
@@ -369,13 +368,21 @@ def user_profile(request):
 
             form = User_Profile_Form()
             form.fields['username'].initial = dict['NAME']
-            form.fields['password'] = dict['PASSWORD']
+            form.fields['password'].initial = '*'*len(dict['PASSWORD'])
             form.fields['email'].initial = dict['EMAIL']
             form.fields['mobile'].initial = dict['MOBILE']
             form.fields['account_type'].initial = dict['ACCOUNT TYPE']
             form.fields['address'].initial = dict['ADDRESS']
-            dict['form'] = form
-            return render(request, 'books/user_profile.html', dict)
+
+            s={}
+            s['username'] = dict['NAME']
+            s['mobile'] = dict['MOBILE']
+            s['email'] = dict['EMAIL']
+            s['address'] = dict['ADDRESS']
+            s['account_type'] = dict['ACCOUNT TYPE']
+            s['password'] = dict['PASSWORD']
+            s['form'] = form
+            return render(request, 'books/user_profile.html', s)
     elif request.session.has_key('username'):
         dict = {}
         dict['username'] = request.session.get('username')
@@ -399,6 +406,7 @@ def user_profile(request):
     else:
         form = LoginForm()
         return render(request, 'books/index.html' , {'form':form})
+
 def home(request):
     if request.session.has_key('username'):
         dict={}
@@ -416,3 +424,4 @@ def home(request):
         form = LoginForm()
         return render(request, 'books/index.html' , {'form':form})
         # # return index(request)
+
