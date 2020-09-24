@@ -7,7 +7,7 @@
         <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Books of {{author_name}}</p>
         {% if book %}
             {% for item in book %}
-                {{ forloop.counter }} {{ item.TITLE}}
+                {{ forloop.counter }} <a href={% url 'books:bookDetails' item.ID %}> {{ item.TITLE}}</a>
                 <br>Price : {{ item.PRICE }}
                 <br>Publisher : {{ item.PUBLISHER_NAME }}
                 <br>Category : {{ item.CATEGORY_NAME }}

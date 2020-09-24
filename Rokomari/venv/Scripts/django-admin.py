@@ -1,4 +1,4 @@
-#!F:\DB project\Rokomari\venv\Scripts\python.exe
+#!D:\Python Django\Rokomari\venv\Scripts\python.exe
 from django.core import management
 
 if __name__ == "__main__":

@@ -10,21 +10,30 @@
         <ul class="nav navbar-nav">
           <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="">Books<span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href={% url 'books:book_category' %}>Category</a></li>
-              <li><a href={% url 'books:book_author' %}>Author</a></li>
-              <li><a href={% url 'books:book_publisher' %}>Publisher</a></li>
+                {% if username %}
+                    <li><a href={% url 'books:book_category' %}>Category</a></li>
+                    <li><a href={% url 'books:book_author' %}>Author</a></li>
+                    <li><a href={% url 'books:book_publisher' %}>Publisher</a></li>
+                {% elif not username %}
+                    <li><a>Category</a></li>
+                    <li><a>Author</a></li>
+                    <li><a>Publisher</a></li>
+                {% endif %}
             </ul>
           </li>
-          <li><a href="#">Electronics</a></li>
+          <li><a>Electronics</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if not username %}
           <li><a href={% url 'books:signup' %}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
           <li><a href={% url 'books:index' %}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
              {% elif username %}
+              <li><a href={% url 'books:cart' %}>CART({{cart_size}})</a></li>
               <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="">{{username}}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href={% url 'books:user_profile' %}>Profile</a></li>
+                  <li><a href={% url 'books:index' %}>Logout</a></li>
+                  <li><a href={% url 'books:allOrder' %}>Orders</a></li>
                 </ul>
               </li>
             {% endif %}

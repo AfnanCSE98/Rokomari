@@ -1,0 +1,51 @@
+{% include "books/home.html" %}
+{% load static %}
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        {% if theBook %}
+            <img src = "{{ theBook.image }}">
+        <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">{{ theBook.title }}</p>
+            <br>ISBN : {{ theBook.isbn}}
+            <br>Edition : {{ theBook.edition }}
+            <br>Pages : {{ theBook.pages }}
+            <br>Language : {{ theBook.language }}
+            <br>Price : {{ theBook.price }}
+            <br>Author : {{ theBook.author }}
+            <br>Publisher : {{ theBook.publisher }}
+            <br>Category : {{ theBook.category }}
+            {% if theBook.averageRating %}
+                <br> Average Rating : {{ theBook.averageRating }}
+            {% elif not  theBook.averageRating %}
+                <br> Average Rating : NA
+            {% endif %}
+            {% if theBook.userRating %}
+                <br> Your Rating : {{ theBook.userRating }}
+            {% elif not theBook.userRating %}
+                <br> Your Rating : NA
+            {% endif %}
+            <form action="{% url 'books:giveRating' theBook.id %}" method = 'get'>
+                <input type="number" value=1 min=1 max = 5 name = {{ theBook.id }}>
+                {% if theBook.userRating %}
+                    <input class="btn btn-primary" type="submit" value="Modify Rating">
+                {% elif not theBook.useRating %}
+                    <input class="btn btn-primary" type="submit" value="Submit Rating">
+                {% endif %}
+            </form>
+            <br><a class="btn btn-primary" href="{% url 'books:addToCart' theBook.id%}">Add To Cart</a>
+            <h3>Comment Section</h3>
+            {% if theBook.comments %}
+                {% for a, b, c in theBook.comments %}
+                    <br> {{ c }} :
+                    <p>{{ b }}</p>
+                {% endfor %}
+            {% elif not theBook.comments %}
+                <p>No Comment Available</p>
+            {% endif %}
+            <form action="{% url 'books:addComment' theBook.id %}" method = 'get'>
+            <input type="text" name = {{ theBook.id }}>
+            <input class="btn btn-primary" type="submit" value="Submit Comment">
+            </form>
+        {% endif %}
+    {% endblock %}

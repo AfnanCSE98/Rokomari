@@ -5,7 +5,7 @@
 
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
         {% for a,b in category %}
-            {{ forloop.counter }}<a class="txt2" href={% url 'books:book_category_details' a %}> {{ b }}</a><br>
+            {{ forloop.counter }}<a class="txt2" href={% url 'books:book_category_details' a%}> {{ b }}</a><br>
         {% endfor %}
 
 

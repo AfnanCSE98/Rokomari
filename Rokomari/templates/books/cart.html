@@ -1,0 +1,36 @@
+{% include "books/home.html" %}
+{% load static %}
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Cart</p>
+        {% if cart %}
+            <form action="{% url 'books:order' %}" method = 'get'>
+            <table style="width: 100%">
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+            {% for id, title, price in cart %}
+                <tr>
+                    <td>{{ title }}</td>
+                    <td>{{ price }}</td>
+                    <td><input type="number" value=1 min=1 name = {{ id }}></td>
+                    <td><a href={% url 'books:delete_Cart_Item' id%}> Remove From Cart </a> </td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td>Total</td>
+                    <td>{{ total }}</td>
+                </tr>
+            </table>
+            <br><input class="btn btn-primary" type="submit" value="Order"/>
+            </form>
+        {% elif not cart %}
+            <p>Cart is empty</p>
+        {% endif %}
+
+    {% endblock %}

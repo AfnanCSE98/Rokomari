@@ -36,3 +36,11 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+table, th {
+  border: 5px solid black;
+}
+
+table, td {
+  border: 2px solid black;
+}
