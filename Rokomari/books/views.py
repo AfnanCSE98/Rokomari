@@ -316,6 +316,7 @@ def book_category_details(request , ctg_id, book_id = None):
             ''', [ctg_id]
         )
         res = dictfetchall(cursor)
+
         customer_id = request.session['id']
         if book_id:
             print(book_id)
@@ -678,6 +679,19 @@ def user_profile(request):
         form = LoginForm()
         return render(request, 'books/index.html' , {'form':form})
 
+def bestseller():
+
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''select b.TITLE , b.IMAGE_SRC , b.PRICE from MYSELF.BOOK b 
+        
+        '''
+    )
+    res = dictfetchall(cursor)
+    conn.close()
+    return res
 
 def home(request):
     if request.session.has_key('username'):
@@ -691,6 +705,7 @@ def home(request):
         dict['password'] = request.session.get('password')
         dict['login_message'] = request.session.get('login_message')
         dict['cart_size'] = len(Get_Cart(request.session.get('id')))
+        dict['bestseller'] = bestseller()
         return render(request, 'books/home.html', dict)
     else:
         #print("home session not found")
