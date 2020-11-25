@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% include "home/home.html" %}
+{% load static %}
+
+    {% block body_block%}
+        <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+
+        <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Login">
+        </form>
+
+    {% endblock %}

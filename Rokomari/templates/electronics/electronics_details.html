@@ -1,0 +1,50 @@
+{% include "home/home.html" %}
+{% load static %}
+
+    {% block body_block%}
+    <div class="container">
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        {% if theElectronics %}
+            <img src = "{{ theElectronics.image }}">
+             <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">{{ theElectronics.title }}</p>
+            <br>Price : {{ theElectronics.price }}
+            <br>Brand : {{ theElectronics.brand }}
+            <br>Category : {{ theElectronics.category }}
+            <br> Description : {{ theElectronics.description }}
+            <br> Warranty : {{ theElectronics.warranty }} Year
+            {% if theElectronics.averageRating %}
+                <br> Average Rating : {{ theElectronics.averageRating }}
+            {% elif not  theElectronics.averageRating %}
+                <br> Average Rating : NA
+            {% endif %}
+            {% if theElectronics.userRating %}
+                <br> Your Rating : {{ theElectronics.userRating }}
+            {% elif not theElectronics.userRating %}
+                <br> Your Rating : NA
+            {% endif %}
+            <form action="{% url 'home:RC:give_rating' theElectronics.id %}" method = 'get'>
+                <input type="number" value=1 min=1 max = 5 name = {{ theElectronics.id }}>
+                {% if theElectronics.userRating %}
+                    <input class="btn btn-primary" type="submit" value="Modify Rating">
+                {% elif not theElectronics.useRating %}
+                    <input class="btn btn-primary" type="submit" value="Submit Rating">
+                {% endif %}
+            </form>
+            <br><a class="btn btn-primary" href="{% url 'home:CWO:add_to_cart' theElectronics.id%}">Add To Cart</a>
+            <br><a class="btn btn-primary" href="{% url 'home:CWO:add_to_wishlist' theElectronics.id%}">Add To Wishlist</a>
+            <h3>Comment Section</h3>
+            {% if theElectronics.comments %}
+                {% for a, b, c in theElectronics.comments %}
+                    <br> {{ c }} :
+                    <p>{{ b }}</p>
+                {% endfor %}
+            {% elif not theElectronics.comments %}
+                <p>No Comment Available</p>
+            {% endif %}
+            <form action="{% url 'home:RC:add_comment' theElectronics.id %}" method = 'get'>
+            <input type="text" name = {{ theElectronics.id }}>
+            <input class="btn btn-primary" type="submit" value="Submit Comment">
+            </form>
+        {% endif %}
+    </div>
+    {% endblock %}

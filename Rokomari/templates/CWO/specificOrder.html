@@ -1,0 +1,38 @@
+{% include "books/../home/home.html" %}
+{% load static %}
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Order No: {{ order_id }}</p>
+        {% if specificOrder %}
+            <table style="width: 100%">
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+            {% for id, title, price, quantity in specificOrder %}
+                <tr>
+                    <td>{{ title }}</td>
+                    <td>{{ price }}</td>
+                    <td>{{ quantity }}</td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td>Total</td>
+                    <td>{{ total }}</td>
+                </tr>
+            </table>
+            <br>
+            <p>
+            Status : {{ status }}
+            </p>
+        {% elif not specificOrder %}
+            <p>Nothing is Ordered</p>
+        {% endif %}
+        <br>
+        <br>
+        <h3><a href={% url 'home:home' %}>Return to Homepage </a></h3>
+    {% endblock %}
