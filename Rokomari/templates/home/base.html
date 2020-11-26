@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:display="http://www.w3.org/1999/xhtml" xmlns:text-align="http://www.w3.org/1999/xhtml">
+<head>
+    <!--<meta http-equiv="Content-type" charset=utf-8" name="viewport" content="width=device-width, initial-scale=1"/>-->
+    <title>Rokomari</title>
+      {% load static %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+      .mid {
+        text-align: center;display: inline-block;
+      }
+        .belowsearch {
+        text-align: center;
+      }
+
+    </style>
+</head>
+<body>
+
+
+
+    <div class="belowsearch">
+        <div class="mid" >
+        <img src={% static "books/images/toplogo.gif" %} width="70px" height="60px">
+        </div>
+        <div class="mid" >
+        <form class="form-inline my-2 my-lg-0" >
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" >
+        <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+    </div>
+    </div>
+
+    <nav class="navbar navbar-light" style="background-color: #F39C12 ;">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="">Books<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                {% if username %}
+                    <li><a href={% url 'books:book_category' %}>Category</a></li>
+                    <li><a href={% url 'books:book_author' %}>Author</a></li>
+                    <li><a href={% url 'books:book_publisher' %}>Publisher</a></li>
+                {% elif not username %}
+                    <li><a>Category</a></li>
+                    <li><a>Author</a></li>
+                    <li><a>Publisher</a></li>
+                {% endif %}
+            </ul>
+          </li>
+          <li><a>Electronics</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% if not username %}
+          <li><a href={% url 'books:signup' %}><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href={% url 'books:index' %}><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+             {% elif username %}
+              <li><a href={% url 'books:cart' %}>CART({{cart_size}})</a></li>
+              <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="">{{username}}<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href={% url 'books:user_profile' %}>Profile</a></li>
+                  <li><a href={% url 'books:index' %}>Logout</a></li>
+                  <li><a href={% url 'books:allOrder' %}>Orders</a></li>
+                </ul>
+              </li>
+            {% endif %}
+        </ul>
+  </div>
+</nav>
+
+
+
+
+
+    {% block body_block %}
+    {# Anything outside of this will be inherited if you use extend.#}
+    {% endblock %}
+
+
+
+</body>
+</html>

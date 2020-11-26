@@ -1,11 +1,11 @@
-{% include "books/home.html" %}
+{% include "home/home.html" %}
 {% load static %}
 
     {% block body_block%}
 
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
         {% for a,b in category %}
-            {{ forloop.counter }}<a class="txt2" href={% url 'books:book_category_details' a%}> {{ b }}</a><br>
+            {{ forloop.counter }}<a class="txt2" href={% url 'home:books:book_category_details' a%}> {{ b }}</a><br>
         {% endfor %}
 
 

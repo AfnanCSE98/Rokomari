@@ -1,4 +1,4 @@
-{% include "books/home.html" %}
+{% include "home/home.html" %}
 {% load static %}
 
     {% block body_block%}
@@ -7,7 +7,7 @@
         <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Publisher : {{publisher_name}}</p>
         {% if book %}
             {% for item in book %}
-                {{ forloop.counter }} <a href={% url 'books:bookDetails' item.ID %}> {{ item.TITLE}}</a>
+                {{ forloop.counter }} <a href={% url 'home:books:book_details' item.ID %}> {{ item.TITLE}}</a>
                 <br>Author : {{ item.AUTHOR_NAME}}
                 <br>Price : {{ item.PRICE }}
                 <br>Category : {{ item.CATEGORY_NAME }}

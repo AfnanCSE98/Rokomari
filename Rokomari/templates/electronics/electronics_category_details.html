@@ -1,0 +1,17 @@
+{% include "home/home.html" %}
+{% load static %}
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Category : {{category_name}}</p>
+        {% if electronics %}
+            {% for item in electronics %}
+                {{ forloop.counter }} <a href={% url 'home:electronics:electronics_details' item.ID %}> {{ item.TITLE}}</a>
+                <br>Price : {{ item.PRICE }}
+                <br>BRAND : {{ item.BRAND_NAME }}
+                <br><br>
+            {% endfor %}
+        {% endif %}
+
+    {% endblock %}

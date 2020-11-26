@@ -1,0 +1,10 @@
+{% include "home/home.html" %}
+{% load static %}
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        {% for a,b in brand %}
+            {{ forloop.counter }}<a class="txt2" href={% url 'home:electronics:electronics_brand_details' a %}> {{ b }}</a><br>
+        {% endfor %}
+    {% endblock %}
