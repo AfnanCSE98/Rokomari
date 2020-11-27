@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'books',
+    'electronics',
+    'home',
+    'CWO',
+    'RC',
+    'search_query',
 ]
 
 MIDDLEWARE = [
