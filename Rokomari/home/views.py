@@ -108,6 +108,7 @@ def user_profile(request):
             dict = get_current_customer(all_customers, username)
             request.session['username'] = dict['NAME']
             request.session['id'] = dict["ID"]
+
             request.session['mobile'] = dict['PHONE NUMBER']
             request.session['email'] = dict['EMAIL']
             request.session['address'] = dict['ADDRESS']
@@ -128,6 +129,7 @@ def user_profile(request):
                  'wishlist_size' : len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))}
 
             s['all_orders'] = get_orders_of_this_user(dict["ID"])
+
             return render(request, 'home/user_profile.html', s)
     elif 'username' in request.session:
         dict = {'username': request.session.get('username'), 'id': request.session.get('id'),
@@ -143,8 +145,10 @@ def user_profile(request):
         form.fields['account_type'].initial = dict['account_type']
         form.fields['address'].initial = dict['address']
         dict['form'] = form
+
         dict['all_orders'] = get_orders_of_this_user(dict['id'])
         print(dict['all_orders'])
+
         return render(request, 'home/user_profile.html', dict)
     else:
         form = LoginForm()

@@ -225,6 +225,7 @@ def get_order_ids(customer_id):
     cursor = conn.cursor()
     cursor.execute('''SELECT oh.ID, oh."ORDER TIME" FROM "MYSELF"."ORDER HISTORY" oh WHERE "USER ID" =:customer_id
                         ''', [customer_id])
+
     res = dict_fetch_all(cursor)
     conn.close()
     return res
@@ -427,6 +428,7 @@ def update_customer(id, username, email, mobile, address, password):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
+
     salt = os.urandom(32)
     salt = binascii.b2a_hex(salt)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
@@ -482,3 +484,4 @@ def get_orders_of_this_user(userid):
         p['time'] = time[:11]
         f_list.append(p)
     return f_list
+

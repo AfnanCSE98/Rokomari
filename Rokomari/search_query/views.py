@@ -19,6 +19,7 @@ def is_electronic_category(ctg_name):
     else:
         return False;
 
+
 def is_author(author_name):
     #author_name = author_name.lower()
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
@@ -125,7 +126,9 @@ def get_dict_book(request , qtxt):
     res = dict_fetch_all(cursor)
     if len(res)==0:
         return {}
+
     dict = user_details(request)
+
     book = {}
     book['isbn'] = res[0]['ISBN']
     book['title'] = res[0]['TITLE']

@@ -133,11 +133,13 @@ def electronics_details(request, electronics_id):
     electronics['id'] = electronics_id
     electronics['description'] = res[0]['DESCRIPTION']
     electronics['warranty'] = res[0]['WARRANTY']
+
     electronics['stock'] = res[0]['STOCK']
     electronics['averageRating'] = get_average_rating(electronics_id)
     electronics['userRating'] = get_customer_rating(dict['id'], electronics_id)
-    print(res[0]['WARRANTY'])
+    #print(res[0]['WARRANTY'])
     #print(electronics['userRating'])
+
     electronics['comments'] = get_comment(electronics_id)
     electronics['image'] = res[0]['IMAGE_SRC']
     print(electronics['image'])

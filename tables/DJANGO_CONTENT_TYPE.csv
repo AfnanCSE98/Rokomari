@@ -1,7 +1,0 @@
-"ID","APP_LABEL","MODEL"
-"1","admin","logentry"
-"2","auth","permission"
-"3","auth","group"
-"4","auth","user"
-"5","contenttypes","contenttype"
-"6","sessions","session"
