@@ -97,6 +97,7 @@ def user_profile(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            request.session['password'] = password
             email = form.cleaned_data['email']
             mobile = form.cleaned_data['mobile']
             address = form.cleaned_data['address']
@@ -107,22 +108,22 @@ def user_profile(request):
             dict = get_current_customer(all_customers, username)
             request.session['username'] = dict['NAME']
             request.session['id'] = dict["ID"]
-            request.session['mobile'] = dict['MOBILE']
+            request.session['mobile'] = dict['PHONE NUMBER']
             request.session['email'] = dict['EMAIL']
             request.session['address'] = dict['ADDRESS']
-            request.session['password'] = dict['PASSWORD']
-            request.session['account_type'] = dict['ACCOUNT TYPE']
+            #request.session['password'] = dict['PASSWORD']
+            request.session['account_type'] = dict['TYPES']
 
             form = UserProfileForm()
             form.fields['username'].initial = dict['NAME']
-            form.fields['password'].initial = '*'*len(dict['PASSWORD'])
+            form.fields['password'].initial = '*'*len(password)
             form.fields['email'].initial = dict['EMAIL']
-            form.fields['mobile'].initial = dict['MOBILE']
-            form.fields['account_type'].initial = dict['ACCOUNT TYPE']
+            form.fields['mobile'].initial = dict['PHONE NUMBER']
+            form.fields['account_type'].initial = dict['TYPES']
             form.fields['address'].initial = dict['ADDRESS']
 
-            s = {'username': dict['NAME'], 'mobile': dict['MOBILE'], 'email': dict['EMAIL'], 'address': dict['ADDRESS'],
-                 'account_type': dict['ACCOUNT TYPE'], 'password': dict['PASSWORD'], 'form': form,
+            s = {'username': dict['NAME'], 'mobile': dict['PHONE NUMBER'], 'email': dict['EMAIL'], 'address': dict['ADDRESS'],
+                 'account_type': dict['TYPES'], 'password': password, 'form': form,
                  'cart_size': len(get_book_cart(request.session.get('id'))) + len(get_electronics_cart(request.session.get('id'))),
                  'wishlist_size' : len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))}
             return render(request, 'home/user_profile.html', s)

@@ -27,8 +27,8 @@
         <img src={% static "books/images/toplogo.gif" %} width="70px" height="60px">
         </div>
         <div class="mid" >
-        <form class="form-inline my-2 my-lg-0" >
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" >
+        <form class="form-inline my-2 my-lg-0" action = "/search" method = "Get">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search_txt">
         <button class="btn btn-primary" type="submit">Search</button>
         </form>
     </div>

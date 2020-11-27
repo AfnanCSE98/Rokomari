@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'electronics',
     'home',
     'CWO',
-    'RC'
+    'RC',
+    'search_query',
 ]
 
 MIDDLEWARE = [

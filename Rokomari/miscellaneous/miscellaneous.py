@@ -113,6 +113,16 @@ def get_book_wishlist(customer_id):
     conn.close()
     return res
 
+
+def get_book_wishlist_len(customer_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT NVL(COUNT("ID"), 0) BWL FROM MYSELF."BOOK WISHLIST"
+                                WHERE "USER ID" =:customer_id''', [customer_id])
+    res = dict_fetch_all(cursor)
+    return int(res[0]['BWL'])
+
 def get_electronics_wishlist(customer_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -122,6 +132,15 @@ def get_electronics_wishlist(customer_id):
     res = dict_fetch_all(cursor)
     conn.close()
     return res
+
+def get_electronics_wishlist_len(customer_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT NVL(COUNT("ID"), 0) EWL FROM MYSELF."ELECTRONICS WISHLIST"
+                                WHERE "USER ID" =:customer_id''', [customer_id])
+    res = dict_fetch_all(cursor)
+    return int(res[0]['EWL'])
 
 def get_book_cart(customer_id, order_id = 1):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
@@ -133,6 +152,16 @@ def get_book_cart(customer_id, order_id = 1):
     conn.close()
     return res
 
+def get_book_cart_len( customer_id, order_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT NVL(COUNT("ID"), 0) BCL FROM MYSELF."BOOK CART"
+                                WHERE "USER ID" =:customer_id AND "ORDER ID" =: order_id''', [customer_id, order_id])
+    res = dict_fetch_all(cursor)
+    return int(res[0]['BCL'])
+
+
 def get_electronics_cart(customer_id, order_id = 1):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -142,6 +171,16 @@ def get_electronics_cart(customer_id, order_id = 1):
     res = dict_fetch_all(cursor)
     conn.close()
     return res
+
+def get_electronics_cart_len(customer_id, order_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT NVL(COUNT("ID"), 0) ECL FROM MYSELF."ELECTRONICS CART"
+                                WHERE "USER ID" =:customer_id AND "ORDER ID" =: order_id''', [customer_id, order_id])
+    res = dict_fetch_all(cursor)
+    return int(res[0]['ECL'])
+
 
 def get_product_name_price(product_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
@@ -349,6 +388,7 @@ def authenticate(username, password):
     cursor.execute('''SELECT * FROM "MYSELF"."USER" WHERE NAME=:username''', [username])
     row = dict_fetch_all(cursor)
     conn.close()
+    print(row)
     for user in row:
         salt = binascii.a2b_hex(user['SALT'])
         key = binascii.a2b_hex(user['KEY'])
@@ -425,17 +465,28 @@ def update_customer(id, username, email, mobile, address, password):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''delete from "MYSELF"."USER" where ID=:id''', [id])
+    salt = os.urandom(32)
+    salt = binascii.b2a_hex(salt)
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    key = binascii.b2a_hex(key)
+    cursor.execute('''UPDATE "MYSELF"."USER"
+                        SET "NAME" =: username,
+                        EMAIL =: email,
+                        "PHONE NUMBER" =: mobile,
+                        ADDRESS =: address,
+                        SALT =: salt,
+                        "KEY" =: key
+                        WHERE ID =: id
+                        ''', [ username, email, mobile, address, salt, key, id])
     conn.commit()
     conn.close()
-    create_customer(id, username, email, mobile, address, password, 'Customer')
     print('updated')
 
 def bestseller():
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT b.TITLE , b.IMAGE_SRC , b.PRICE from MYSELF.BOOK b ''')
+    cursor.execute('''SELECT b.TITLE , b.IMAGE_SRC , b.PRICE , b.ID from MYSELF.BOOK b ''')
     res = dict_fetch_all(cursor)
     conn.close()
     return res

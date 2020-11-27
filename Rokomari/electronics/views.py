@@ -5,16 +5,21 @@ import cx_Oracle
 
 
 def electronics_category(request):
+
     if request.session.has_key('username'):
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
         conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
         cursor = conn.cursor()
-        dict={}
         cursor.execute( '''SELECT * FROM MYSELF."ELECTRONICS CATEGORY"''')
         res = dict_fetch_all(cursor)
         conn.close()
+
+
         ctg_id = [x['ID'] for x in res]
         ctg_name = [x['NAME'] for x in res]
+
+
+        dict = {}
         dict['category'] = [(x[0], x[1]) for x in zip(ctg_id, ctg_name)]
         dict['username'] = request.session.get('username')
         dict['id'] = request.session.get('id')
@@ -24,41 +29,53 @@ def electronics_category(request):
         dict['account_type'] = request.session.get('account_type')
         dict['password'] = request.session.get('password')
         dict['none'] = None
-        dict['cart_size'] = len(get_book_cart(request.session.get('id'))) + len(get_electronics_cart(request.session.get('id')))
-        dict['wishlist_size'] = len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
         return render(request, 'electronics/electronics_category.html', dict)
     else:
         form = LoginForm()
+
         return render(request, 'home/index.html', {'form': form})
 
 
 def electronics_category_details(request, ctg_id):
+
     if 'username' in request.session:
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
         conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
         cursor = conn.cursor()
-        #complex query can be done here
-        cursor.execute(
-            '''SELECT * FROM "MYSELF"."ELECTRONICS" where "CATEGORY ID" = :ctg_id
-            ''', [ctg_id]
-        )
+        cursor.execute('''SELECT ID, TITLE, PRICE,  
+                            (SELECT B.NAME FROM MYSELF.BRAND B WHERE B.ID = E."BRAND ID") BRAND_NAME
+                            FROM MYSELF.ELECTRONICS E WHERE "CATEGORY ID" = :ctg_id
+                        ''', [ctg_id])
         res = dict_fetch_all(cursor)
         conn.close()
-        for electronics in res:
-            electronics['BRAND_NAME'] = get_brand_name(electronics['BRAND ID'])
-        dict = {'electronics': res, 'category_name': get_electronics_category_name(ctg_id), 'category_id': ctg_id,
-                'username': request.session.get('username'), 'id': request.session.get('id'),
-                'mobile': request.session.get('mobile'), 'email': request.session.get('email'),
-                'address': request.session.get('address'), 'account_type': request.session.get('account_type'),
-                'password': request.session.get('password'), 'cart_size': len(get_book_cart(request.session.get('id'))) + len(get_electronics_cart(request.session.get('id'))),
-                'wishlist_size':len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))}
+
+
+        dict = {}
+        dict['electronics'] = res
+        dict['category_name'] = get_electronics_category_name(ctg_id)
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
+
         return render(request, 'electronics/electronics_category_details.html', dict)
     else:
         form = LoginForm()
+
         return render(request, 'home/index.html', {'form': form})
 
 
 def electronics_brand(request):
+
     if request.session.has_key('username'):
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
         conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -66,39 +83,58 @@ def electronics_brand(request):
         cursor.execute('''SELECT * FROM "MYSELF"."BRAND"''')
         res = dict_fetch_all(cursor)
         conn.close()
+
+
         brand_id = [x['ID'] for x in res]
         brand_name = [x['NAME'] for x in res]
-        dict= {'brand': [(x[0], x[1]) for x in zip(brand_id, brand_name)], 'username': request.session.get('username'),
-               'id': request.session.get('id'), 'mobile': request.session.get('mobile'),
-               'email': request.session.get('email'), 'address': request.session.get('address'),
-               'account_type': request.session.get('account_type'), 'password': request.session.get('password'),
-               'cart_size': len(get_book_cart(request.session.get('id'))) + len(get_electronics_cart(request.session.get('id'))),
-               'wishlist_size' : len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))}
+
+
+        dict = {}
+        dict['brand'] = [(x[0], x[1]) for x in zip(brand_id, brand_name)]
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len( dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
         return render(request, 'electronics/electronics_brand.html', dict)
     else:
         form = LoginForm()
+
         return render(request, 'home/index.html', {'form': form})
 
 
-def electronics_brand_details(request, brand_id, electronics_id=None):
+def electronics_brand_details(request, brand_id):
+
     if request.session.has_key('username'):
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
         conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
         cursor = conn.cursor()
-        cursor.execute(
-            '''SELECT * FROM "MYSELF"."ELECTRONICS" WHERE "BRAND ID"=:brand_id
-            ''', [brand_id]
-        )
+        cursor.execute('''SELECT ID, TITLE, PRICE,
+                            (SELECT C.NAME FROM MYSELF."ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") CATEGORY_NAME
+                            FROM MYSELF.ELECTRONICS E WHERE "BRAND ID"=:brand_id''', [brand_id])
         res = dict_fetch_all(cursor)
         conn.close()
-        for electronics in res:
-            electronics['CATEGORY_NAME'] = get_electronics_category_name(electronics['CATEGORY ID'])
-        dict = {'electronics': res, 'brand_name': get_brand_name(brand_id), 'username': request.session.get('username'),
-                'id': request.session.get('id'), 'mobile': request.session.get('mobile'),
-                'email': request.session.get('email'), 'address': request.session.get('address'),
-                'account_type': request.session.get('account_type'), 'password': request.session.get('password'),
-                'brand_id': brand_id, 'cart_size': len(get_book_cart(request.session.get('id'))) + len(get_electronics_cart(request.session.get('id'))),
-                'wishlist_size':len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))}
+
+
+        dict = {}
+        dict['electronics'] = res
+        dict['brand_name'] = get_brand_name(brand_id)
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
+
         return render(request, 'electronics/electronics_brand_details.html', dict)
     else:
         form = LoginForm()
@@ -109,10 +145,30 @@ def electronics_details(request, electronics_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT * FROM "MYSELF"."ELECTRONICS" WHERE "ID" =: electronics_id''',
-                   {'electronics_id' : electronics_id})
+    customer_id = request.session.get('id')
+    cursor.execute('''SELECT TITLE, PRICE, DESCRIPTION, WARRANTY, 
+                            (SELECT  NAME FROM BRAND B WHERE B.ID = E."BRAND ID") "BRAND NAME",
+                            (SELECT  NAME FROM "ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") "CATEGORY NAME",
+                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING",
+                            (SELECT TO_NUMBER(STARS) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID AND "USER ID" =: customer_id) "USER RATING",
+                            IMAGE_SRC FROM ELECTRONICS E WHERE "ID" =: book_id
+                            ''', [customer_id, electronics_id])
     res = dict_fetch_all(cursor)
     conn.close()
+
+    electronics = {}
+    electronics['title'] = res[0]['TITLE']
+    electronics['price'] = res[0]['PRICE']
+    electronics['brand'] = res[0]['BRAND NAME']
+    electronics['category'] = res[0]['CATEGORY NAME']
+    electronics['id'] = electronics_id
+    electronics['description'] = res[0]['DESCRIPTION']
+    electronics['warranty'] = res[0]['WARRANTY']
+    electronics['averageRating'] = res[0]['AVERAGE RATING']
+    electronics['userRating'] = res[0]['USER RATING']
+    electronics['comments'] = get_comment(electronics_id)
+    electronics['image'] = res[0]['IMAGE_SRC']
+
     dict = {}
     dict['username'] = request.session.get('username')
     dict['id'] = request.session.get('id')
@@ -122,22 +178,9 @@ def electronics_details(request, electronics_id):
     dict['account_type'] = request.session.get('account_type')
     dict['password'] = request.session.get('password')
     dict['login_message'] = request.session.get('login_message')
-    dict['cart_size'] = len(get_book_cart(request.session.get('id'))) + len(get_electronics_cart(request.session.get('id')))
-    dict['wishlist_size'] = len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))
-    electronics = {}
-    electronics['title'] = res[0]['TITLE']
-    electronics['price'] = res[0]['PRICE']
-    electronics['brand'] = get_brand_name(res[0]['BRAND ID'])
-    electronics['category'] = get_electronics_category_name(res[0]['CATEGORY ID'])
-    electronics['id'] = electronics_id
-    electronics['description'] = res[0]['DESCRIPTION']
-    electronics['warranty'] = res[0]['WARRANTY']
-    electronics['averageRating'] = get_average_rating(electronics_id)
-    electronics['userRating'] = get_customer_rating(dict['id'], electronics_id)
-    print(electronics['averageRating'])
-    print(electronics['userRating'])
-    electronics['comments'] = get_comment(electronics_id)
-    electronics['image'] = res[0]['IMAGE_SRC']
-    print(electronics['image'])
+    dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+    dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
     dict['theElectronics'] = electronics
+
+
     return render(request, 'electronics/electronics_details.html', dict)

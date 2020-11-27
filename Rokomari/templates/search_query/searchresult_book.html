@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Rokomari-Search Results</title>
+        {% load static %}
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="eCommerce HTML Template Free Download" name="keywords">
+        <meta content="eCommerce HTML Template Free Download" name="description">
+
+        <!-- Favicon -->
+        <link href="{% static "search_query/img/favicon.ico" %}" rel="icon">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Source+Code+Pro:700,900&display=swap" rel="stylesheet">
+
+        <!-- CSS Libraries -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'search_query/lib/slick/slick.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'search_query/lib/slick/slick-theme.css' %}" />
+
+        <!-- Template Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="{% static 'search_query/css/style.css' %}" />
+    </head>
+
+    <body>
+        <!-- Top bar Start -->
+        <div class="top-bar">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <i class="fa fa-envelope"></i>
+                        admin@rokomari.com
+                    </div>
+                    <div class="col-sm-6">
+                        <i class="fa fa-phone-alt"></i>
+                        +012-345-6789
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Top bar End -->
+
+        <!-- Nav Bar Start -->
+        <div class="nav">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+                    <a href="#" class="navbar-brand">MENU</a>
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <div class="navbar-nav mr-auto">
+                        {% if not username %}
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Register</a>
+                                <div class="dropdown-menu">
+                                    <a href="{% url 'home:signup' %}" class="dropdown-item">SignUp</a>
+                                    <a href="{% url 'home:index' %}" class="dropdown-item">Login</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                            <div class="nav-item dropdown">
+
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Books</a>
+                                <div class="dropdown-menu">
+                                    <a href={% url 'home:books:book_author' %} class="dropdown-item">Author</a>
+                                    <a href={% url 'home:books:book_category' %} class="dropdown-item">Category</a>
+                                    <a href={% url 'home:books:book_publisher' %} class="dropdown-item">Publishers</a>
+                                </div>
+                            </div>
+							<div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Electronics</a>
+                                <div class="dropdown-menu">
+                                    <a href={% url 'home:electronics:electronics_brand' %} class="dropdown-item">Brand</a>
+                                    <a href={% url 'home:books:book_category' %} class="dropdown-item">Category</a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="navbar-nav ml-auto">
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{username}}</a>
+                                <div class="dropdown-menu">
+                                    <a href={% url 'home:user_profile' %} class="dropdown-item">Profile</a>
+                                    <a href={% url 'home:CWO:all_order' %} class="dropdown-item">Orders</a>
+									<a href={% url 'home:index' %} class="dropdown-item">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Nav Bar End -->
+
+        <!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">
+                            <a href="index.html">
+                                <img src="{% static "search_query/img/logo.png" %}" alt="Logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <form action = "/search" method = "Get">
+                        <div class="search">
+                            <input type="text" placeholder="Search" name="search_txt">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="wishlist.html" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                                <span>{{wishlist_size}}</span>
+                            </a>
+                            <a href="cart.html" class="btn cart">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>{{cart_size}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Bar End -->
+
+        <!-- Breadcrumb Start -->
+        <div class="breadcrumb-wrap">
+            <div class="container-fluid">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href={% url 'home:home' %}>Home</a></li>
+                    <li class="breadcrumb-item active">Search Results</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Breadcrumb End -->
+
+        <!-- Product Detail Start -->
+        <div class="product-detail">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8">
+					{% if theBook %}
+                        <div class="product-detail-top">
+                            <div class="row align-items-center">
+                                <div class="col-md-5">
+                                    <div class="product-slider-single normal-slider">
+                                        <img src={{ theBook.image }} alt="Product">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="product-content">
+                                        <div class="title"><h2>{{ theBook.title }}</h2></div>
+                                        <div class="ratting">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="price">
+                                            <h4>Price:</h4>
+                                            <p>{{ theBook.price }}</p>
+                                        </div>
+                                        <div class="action">
+                                            <a class="btn" href={% url 'home:books:book_details' theBook.id %}><i class="btn btn-primary btn-lg"></i>Show Details</a>
+                                        </div>
+                                        <div class="action">
+                                            <a class="btn" href="{% url 'home:CWO:add_to_cart' theBook.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            <a class="btn" href="{% url 'home:CWO:add_to_wishlist' theBook.id%}"><i class="fa fa-shopping-bag"></i>Add to Wishlist</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="product">
+                        {% if author_book %}
+                            <div class="section-header">
+                                <h1>Other Books of {{ theBook.author }}</h1>
+                            </div>
+                        {% endif %}
+
+
+                            {% for book in author_book %}
+                            &nbsp;&nbsp;
+
+                                    <div class="mid">
+                                <div class="card" style="width: 20rem;">
+                              <img src={{ book.IMAGE_SRC }} class="card-img-top" alt="...">
+                              <div class="card-body">
+                                <h5 class="card-title">{{ book.TITLE }}</h5>
+                                <p class="card-text">Price : {{ book.PRICE }}</p>
+                                <a href="{% url 'home:books:book_details' book.ID %}" class="btn btn-primary">Details</a>
+                              </div>
+                               </div>
+                                </div>
+                            &nbsp;&nbsp;
+                            {% endfor %}
+
+                        {% if ctg_book %}
+                            <div class="section-header">
+                                <h1>Other Books of {{ theBook.category }} Category</h1>
+                            </div>
+                        {% endif %}
+
+                            {% for book in ctg_book %}
+                            &nbsp;&nbsp;
+                            <div class="mid">
+                                <div class="card" style="width: 20rem;">
+                              <img src={{ book.IMAGE_SRC }} class="card-img-top" alt="...">
+                              <div class="card-body">
+                                <h5 class="card-title">{{ book.TITLE }}</h5>
+                                <p class="card-text">Price : {{ book.PRICE }}</p>
+                                <a href="{% url 'home:books:book_details' book.ID %}" class="btn btn-primary">Details</a>
+                              </div>
+                               </div>
+                            </div>
+                            &nbsp;&nbsp;
+                            {% endfor %}
+
+
+                        </div>
+                        {% else %}
+                        <div class="section-header">
+                                <h3>No search results found!!Try something else</h3>
+                        </div>
+						{% endif %}
+                    </div>
+
+                    <!-- Side Bar Start -->
+                    <div class="col-lg-4 sidebar">
+                        <div class="sidebar-widget category">
+                            <h2 class="title">Category</h2>
+                            <nav class="navbar bg-light">
+                                <ul class="navbar-nav">
+                                    {% for a,b in all_categories %}
+                                    <li class="nav-item">
+                                        <a class="txt2" href="{% url 'home:books:book_category_details' a%}"> {{ b }}</a><br>
+                                    </li>
+                                    {% endfor %}
+
+                                </ul>
+                            </nav>
+                        </div>
+
+
+                    </div>
+                    <!-- Side Bar End -->
+                </div>
+            </div>
+        </div>
+        <!-- Product Detail End -->
+
+        <!-- feature Start -->
+        <!-- Feature Start-->
+        <div class="feature">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fab fa-cc-mastercard"></i>
+                            <h2>Secure Payment</h2>
+                            <p>
+                                Pay cash on delivery
+								Pay cash at your doorstep
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fa fa-truck"></i>
+                            <h2>Delivery</h2>
+                            <p>
+                                All over Bangladesh
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fa fa-sync-alt"></i>
+                            <h2>30 Days Return</h2>
+                            <p>
+                                All over Bangladesh
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fa fa-comments"></i>
+                            <h2>24/7 Support</h2>
+                            <p>
+                                Help: 16297
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Feature End-->
+        <!-- feature End -->
+
+        <!-- Footer Start -->
+        <div class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Get in Touch</h2>
+                            <div class="contact-info">
+                                <p><i class="fa fa-map-marker"></i>2/1/E, Arambag, Eden Center, Motijheel, Dhaka-1000</p>
+                                <p><i class="fa fa-envelope"></i>admin@rokomari.com</p>
+                                <p><i class="fa fa-phone"></i>+8801708166238, +8801708166239, +8801708166242</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Follow Us</h2>
+                            <div class="contact-info">
+                                <div class="social">
+                                    <a href=""><i class="fab fa-twitter"></i></a>
+                                    <a href=""><i class="fab fa-facebook-f"></i></a>
+                                    <a href=""><i class="fab fa-linkedin-in"></i></a>
+                                    <a href=""><i class="fab fa-instagram"></i></a>
+                                    <a href=""><i class="fab fa-youtube"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Company Info</h2>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms & Condition</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Purchase Info</h2>
+                            <ul>
+                                <li><a href="#">Pyament Policy</a></li>
+                                <li><a href="#">Shipping Policy</a></li>
+                                <li><a href="#">Return Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row payment align-items-center">
+                    <div class="col-md-6">
+                        <div class="payment-method">
+                            <h2>We Accept:</h2>
+                            <img src="{% static "search_query/img/payment-method.png" %}" alt="Payment Method" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="payment-security">
+                            <h2>Secured By:</h2>
+                           <img src="{% static "search_query/img/godaddy.svg" %}" alt="Payment Security" />
+                            <img src="{% static "search_query/img/norton.svg" %}" alt="Payment Security" />
+                            <img src="{% static "search_query/img/ssl.svg" %}" alt="Payment Security" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        <!-- Footer Bottom Start -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="company-summery-row">
+                    <div class="d-flex justify-content-center">
+                        <div class="col copyright">
+                            <p>
+                                Rokomari.com is now one of the leading e-commerce organizations in Bangladesh. It is indeed the biggest online bookshop or bookstore in Bangladesh that helps you save time and money. You can buy books online with a few clicks or a convenient phone call. With breathtaking discounts and offers you can buy anything from Bangla Upannash or English story books to academic, research or competitive exam books. Superfast cash on delivery service brings the products at your doorstep. Our customer support, return and replacement policies will surely add extra confidence in your online shopping experience. Happy Shopping with Rokomari.com!
+                            </p>
+                        </div>
+                    </div>
+                        <div class="col copyright">
+                            <p class="text-center"> © 2012-2020 Rokomari.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Bottom End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'search_query/lib/easing/easing.min.js' %}"></script>
+        <script src="{% static 'search_query/lib/slick/slick.min.js' %}"></script>
+
+        <!-- Template Javascript -->
+        <script src="{% static 'search_query/js/main.js' %}"></script>
+    </body>
+</html>

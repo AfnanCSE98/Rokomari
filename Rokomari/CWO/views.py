@@ -169,8 +169,10 @@ def add_to_wishlist(request, product_id):
     else:
         return redirect('home:electronics:electronics_details', electronics_id=product_id)
 
+
 def add_to_cart_from_wishlist(request):
     pass
+
 
 def delete_wishlist_item(request, product_id):
     customer_id = request.session.get('id')

@@ -10,5 +10,6 @@ urlpatterns = [
     path('', include('books.urls')),
     path('', include('electronics.urls')),
     path('', include('CWO.urls')),
-    path('', include('RC.urls'))
+    path('', include('RC.urls')),
+    path('', include('search_query.urls'))
 ]
