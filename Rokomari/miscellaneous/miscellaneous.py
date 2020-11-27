@@ -3,7 +3,7 @@ import hashlib
 import os
 import binascii
 THRESHOLD = int(1e6)
-
+star_list = ['', '*', '**', '***', '****', '*****']
 
 def dict_fetch_all(cursor):
     """
@@ -261,8 +261,9 @@ def get_order_ids(customer_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT ID FROM "MYSELF"."ORDER HISTORY" WHERE "USER ID" =:customer_id
-                    ''', [customer_id])
+    cursor.execute('''SELECT oh.ID, oh."ORDER TIME" FROM "MYSELF"."ORDER HISTORY" oh WHERE "USER ID" =:customer_id
+                        ''', [customer_id])
+
     res = dict_fetch_all(cursor)
     conn.close()
     return res
@@ -465,6 +466,7 @@ def update_customer(id, username, email, mobile, address, password):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
+
     salt = os.urandom(32)
     salt = binascii.b2a_hex(salt)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
@@ -490,3 +492,39 @@ def bestseller():
     res = dict_fetch_all(cursor)
     conn.close()
     return res
+
+
+def get_orders_of_this_user(userid):
+    res = get_order_ids(userid)
+    lst = []
+    for item in res:
+        lst.append((int(item['ID']) , str(item['ORDER TIME'])))
+    #lst.sort(reverse=True)
+    f_list = []
+    for it,time in lst:
+        res1 = get_book_cart(userid, it)
+        res2 = get_electronics_cart(userid, it)
+        lt = []
+        p = {}
+        for item in res1:
+            a, b, c = get_product_name_price(item['BOOK ID'])
+            lt.append((a, b, c, item['BOOK QUANTITY']))
+        for item in res2:
+            a, b, c = get_product_name_price(item['ELECTRONICS ID'])
+            lt.append((a, b, c, item['ELECTRONICS QUANTITY']))
+        total = 0
+        for a, b, c, d in lt:
+            total += int(c) * int(d)
+        p['total_price'] = total
+        p['product'] = lt
+        p['status'] = get_order_status(it)
+        p['order_id'] = it
+        p['time'] = time[:11]
+        f_list.append(p)
+    return f_list
+
+
+def get_star_list(stars):
+    for star in star_list:
+        if len(star) == stars:
+            return star

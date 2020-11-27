@@ -42,7 +42,7 @@ class LoginForm(forms.Form):
 
 class UserProfileForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
-    password = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input-group'}))
     mobile = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
     address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))

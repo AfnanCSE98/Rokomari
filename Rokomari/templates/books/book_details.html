@@ -169,11 +169,9 @@
                                     <div class="product-content">
                                         <div class="title"><h2>{{ theBook.title }}</h2></div>
                                         <div class="ratting">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                                            {% for i in theBook.star_list %}
+                                                <i class="fa fa-star"></i>
+                                            {% endfor %}
                                         </div>
 										<div class="price">
                                             <h4>Publisher: </h4>
@@ -208,12 +206,22 @@
 										<br>
 										<h3>Rating </h3>
 										{% if theBook.averageRating %}
-											 Average Rating : {{ theBook.averageRating }}
+											 Average Rating :
+                                            <div class="ratting">
+                                                {% for i in theBook.star_list %}
+                                                 <i class="fa fa-star"></i>
+                                                {% endfor %}
+                                            </div>
 										{% elif not  theBook.averageRating %}
 											 Average Rating : NA
 										{% endif %}<br>
 										{% if theBook.userRating %}
-											 Your Rating : {{ theBook.userRating }}
+											 Your Rating :
+                                            <div class="ratting">
+                                                {% for i in theBook.star_list_user %}
+                                                    <i class="fa fa-star"></i>
+                                                {% endfor %}
+                                            </div>
 										{% elif not theBook.userRating %}
 											 Your Rating : NA
 										{% endif %}<br>

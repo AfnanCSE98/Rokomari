@@ -1,10 +1,16 @@
-{% include "home/home.html" %}
+{% extends "home/home.html" %}
 {% load static %}
 
     {% block body_block%}
 
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
-        <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Wishlist</p>
+       <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h1>WISH LIST</h1>
+                </div>
+            </div>
+        </div>
         {% if wishlist %}
             <table style="width: 100%">
             <tr>
@@ -25,5 +31,10 @@
         {% elif not wishlist %}
             <p>Wishlist is empty</p>
         {% endif %}
+        <br>
+        <br>
+    {% endblock %}
+
+    {% block best_seller  %}
 
     {% endblock %}

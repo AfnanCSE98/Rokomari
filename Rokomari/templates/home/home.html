@@ -193,8 +193,11 @@
         </div>
         <!-- Call to Action End -->
 		
-		
-		
+		{% block body_block %}
+
+        {% endblock %}
+
+        {% block best_seller %}
 		<!-- Featured Product Start -->
         <div class="featured-product product">
             <div class="container-fluid">
@@ -237,7 +240,7 @@
             </div>
         </div>
         <!-- Featured Product End -->       
-        
+        {% endblock %}
 
 <!--
 {% if not username %}

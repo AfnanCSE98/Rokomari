@@ -97,7 +97,6 @@ def user_profile(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            request.session['password'] = password
             email = form.cleaned_data['email']
             mobile = form.cleaned_data['mobile']
             address = form.cleaned_data['address']
@@ -111,7 +110,7 @@ def user_profile(request):
             request.session['mobile'] = dict['PHONE NUMBER']
             request.session['email'] = dict['EMAIL']
             request.session['address'] = dict['ADDRESS']
-            #request.session['password'] = dict['PASSWORD']
+            request.session['password'] = password
             request.session['account_type'] = dict['TYPES']
 
             form = UserProfileForm()
@@ -126,6 +125,9 @@ def user_profile(request):
                  'account_type': dict['TYPES'], 'password': password, 'form': form,
                  'cart_size': len(get_book_cart(request.session.get('id'))) + len(get_electronics_cart(request.session.get('id'))),
                  'wishlist_size' : len(get_book_wishlist(request.session.get('id'))) + len(get_electronics_wishlist(request.session.get('id')))}
+
+            s['all_orders'] = get_orders_of_this_user(dict["ID"])
+
             return render(request, 'home/user_profile.html', s)
     elif 'username' in request.session:
         dict = {'username': request.session.get('username'), 'id': request.session.get('id'),
@@ -141,8 +143,13 @@ def user_profile(request):
         form.fields['account_type'].initial = dict['account_type']
         form.fields['address'].initial = dict['address']
         dict['form'] = form
-        print(form)
+
+        dict['all_orders'] = get_orders_of_this_user(dict['id'])
+        print(dict['all_orders'])
+
         return render(request, 'home/user_profile.html', dict)
     else:
         form = LoginForm()
         return render(request, 'home/index.html', {'form': form})
+
+

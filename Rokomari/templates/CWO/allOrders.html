@@ -1,19 +1,30 @@
-{% include "home/home.html" %}
+{% extends "home/home.html" %}
 {% load static %}
 
     {% block body_block%}
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
-        <p style="font-size: 30px ; text-align:center;font-family: 'Comic Sans MS',serif ">Order History</p>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h1>Order History</h1>
+                </div>
+            </div>
+        </div>
         {% if allOrderItems %}
             {% for items in allOrderItems %}
-                <p><a href={% url 'home:CWO:specific_order' items.order_id %}> Order No: {{ items.order_id }}</a></p>
+                <div class="featured-product product">
+                    <div class="container-fluid">
+                         <div class="section-header">
+                            <p><a href={% url 'home:CWO:specific_order' items.order_id %}> Order No: {{ items.order_id }}</a></p>
+                         </div>
+                     </div>
+                </div>
                 <br>
             <table style="width: 100%">
             <tr>
                 <th>Title</th>
                 <th>Price</th>
                 <th>Quantity</th>
-                <th></th>
             </tr>
             {% for id, title, price, quantity in items.lst %}
                 <tr>
@@ -35,4 +46,10 @@
         {% elif not allOrderIDs %}
             <p>Nothing is Ordered</p>
         {% endif %}
+            <br>
+            <br>
+    {% endblock %}
+
+    {% block best_seller  %}
+
     {% endblock %}

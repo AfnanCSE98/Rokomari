@@ -149,9 +149,11 @@
 		
 
 
-		<div class="login">
+		  <div class="product-view">
             <div class="container-fluid">
-                <div class="row">                                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="row">
 						{% if book %}
 							{% for item in book %}
 								<div class="col-lg-3">
@@ -159,11 +161,9 @@
                             <div class="product-title">
                                 <a href="#">{{ item.TITLE }}</a>
                                 <div class="ratting">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
+                                    {% for i in item.star_list %}
+                                        <i class="fa fa-star"></i>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div class="product-image">                              

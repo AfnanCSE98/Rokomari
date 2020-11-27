@@ -47,11 +47,15 @@ def book_category_details(request, ctg_id):
         cursor.execute('''SELECT ID, TITLE, 
                             (SELECT "NAME" FROM MYSELF.AUTHOR A WHERE A.ID = B."AUTHOR ID") AUTHOR_NAME,
                             (SELECT "NAME" FROM MYSELF.PUBLISHER P WHERE P.ID = B."PUBLISHER ID") PUBLISHER_NAME,
-                                PRICE FROM MYSELF.BOOK B WHERE "CATEGORY ID" =: ctg_id
+                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID) "AVERAGE RATING",
+                            IMAGE_SRC,    PRICE FROM MYSELF.BOOK B WHERE "CATEGORY ID" =: ctg_id
             ''', [ctg_id])
         res = dict_fetch_all(cursor)
         conn.close()
 
+        for item in res:
+            if not isinstance(item['AVERAGE RATING'], type(None)):
+                item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
 
         dict = {}
         dict['book'] = res
@@ -116,11 +120,15 @@ def book_author_details(request, author_id):
         cursor = conn.cursor()
         cursor.execute('''SELECT ID, TITLE, (SELECT "NAME" FROM MYSELF."BOOK CATEGORY" C WHERE C.ID = B."CATEGORY ID") CATEGORY_NAME,
                                     (SELECT "NAME" FROM MYSELF.PUBLISHER P WHERE P.ID = B."PUBLISHER ID") PUBLISHER_NAME,
-                                        PRICE FROM MYSELF.BOOK B WHERE "AUTHOR ID" = :author_id
+                                    (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID) "AVERAGE RATING",
+                                    IMAGE_SRC,    PRICE FROM MYSELF.BOOK B WHERE "AUTHOR ID" = :author_id
                     ''', [author_id])
         res = dict_fetch_all(cursor)
         conn.close()
 
+        for item in res:
+            if not isinstance(item['AVERAGE RATING'], type(None)):
+                item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
 
         dict = {}
         dict['book'] = res
@@ -184,12 +192,16 @@ def book_publisher_details(request, pub_id):
         cursor = conn.cursor()
         cursor.execute('''SELECT ID, TITLE, (SELECT "NAME" FROM MYSELF."BOOK CATEGORY" C WHERE C.ID = B."CATEGORY ID") CATEGORY_NAME,
                                             (SELECT "NAME" FROM MYSELF.AUTHOR A WHERE A.ID = B."AUTHOR ID") AUTHOR_NAME,
-                                                PRICE FROM MYSELF.BOOK B WHERE "PUBLISHER ID" = :pub_id
+                                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID) "AVERAGE RATING",
+                                            IMAGE_SRC,    PRICE FROM MYSELF.BOOK B WHERE "PUBLISHER ID" = :pub_id
                             ''', [pub_id]
                        )
         res = dict_fetch_all(cursor)
         conn.close()
 
+        for item in res:
+            if not isinstance(item['AVERAGE RATING'], type(None)):
+                item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
 
         dict = {}
         dict['book'] = res
@@ -218,7 +230,7 @@ def book_details(request, book_id):
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
     customer_id = request.session.get('id')
-    cursor.execute('''SELECT ISBN, TITLE, EDITION, "NO OF PAGES", LANGUAGE, PRICE, 
+    cursor.execute('''SELECT ISBN, TITLE, EDITION, "NO OF PAGES", LANGUAGE, PRICE, STOCK,
                         (SELECT NAME FROM AUTHOR A WHERE A.ID = B."AUTHOR ID") "AUTHOR NAME", 
                         (SELECT  NAME FROM PUBLISHER P WHERE P.ID = B."PUBLISHER ID") "PUBLISHER NAME",
                         (SELECT  NAME FROM "BOOK CATEGORY" C WHERE C.ID = B."CATEGORY ID") "CATEGORY NAME",
@@ -232,6 +244,7 @@ def book_details(request, book_id):
 
     book = {}
     book['isbn'] = res[0]['ISBN']
+    book['stock'] = res[0]['STOCK']
     book['title'] = res[0]['TITLE']
     book['edition'] = res[0]['EDITION']
     book['pages'] = res[0]['NO OF PAGES']
@@ -242,9 +255,13 @@ def book_details(request, book_id):
     book['category'] = res[0]['CATEGORY NAME']
     book['id'] = book_id
     book['averageRating'] = res[0]['AVERAGE RATING']
-    book['userRating'] = get_customer_rating(customer_id, book_id)
+    book['userRating'] = res[0]['USER RATING']
     book['comments'] = get_comment(book_id)
     book['image'] = res[0]['IMAGE_SRC']
+    if not isinstance(book['averageRating'], type(None)):
+        book['star_list'] = get_star_list(int(book['averageRating']))
+    if not isinstance(book['userRating'], type(None)):
+        book['star_list_user'] = get_star_list(int(book['userRating']))
 
 
     dict = {}

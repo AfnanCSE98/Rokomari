@@ -122,6 +122,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="user">
+                            {% if username %}
                             <a href="{% url 'home:CWO:wishlist' %}" class="btn wishlist">
                                 <i class="fa fa-heart"></i>
                                 <span>{{wishlist_size}}</span>
@@ -130,6 +131,7 @@
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>{{cart_size}}</span>
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

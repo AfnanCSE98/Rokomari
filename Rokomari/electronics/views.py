@@ -46,8 +46,8 @@ def electronics_category_details(request, ctg_id):
         conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
         cursor = conn.cursor()
         cursor.execute('''SELECT ID, TITLE, PRICE,  
-                            (SELECT B.NAME FROM MYSELF.BRAND B WHERE B.ID = E."BRAND ID") BRAND_NAME
-                            FROM MYSELF.ELECTRONICS E WHERE "CATEGORY ID" = :ctg_id
+                            (SELECT B.NAME FROM MYSELF.BRAND B WHERE B.ID = E."BRAND ID") BRAND_NAME,
+                            IMAGE_SRC FROM MYSELF.ELECTRONICS E WHERE "CATEGORY ID" = :ctg_id
                         ''', [ctg_id])
         res = dict_fetch_all(cursor)
         conn.close()
@@ -115,8 +115,8 @@ def electronics_brand_details(request, brand_id):
         conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
         cursor = conn.cursor()
         cursor.execute('''SELECT ID, TITLE, PRICE,
-                            (SELECT C.NAME FROM MYSELF."ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") CATEGORY_NAME
-                            FROM MYSELF.ELECTRONICS E WHERE "BRAND ID"=:brand_id''', [brand_id])
+                            (SELECT C.NAME FROM MYSELF."ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") CATEGORY_NAME,
+                            IMAGE_SRC FROM MYSELF.ELECTRONICS E WHERE "BRAND ID"=:brand_id''', [brand_id])
         res = dict_fetch_all(cursor)
         conn.close()
 
