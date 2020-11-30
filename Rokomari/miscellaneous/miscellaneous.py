@@ -107,8 +107,11 @@ def get_book_wishlist(customer_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT ID, "BOOK ID" FROM "MYSELF"."BOOK WISHLIST" WHERE "USER ID" =:customer_id''',
-                   [customer_id])
+    cursor.execute('''SELECT W."BOOK ID", B."TITLE", B."PRICE"
+                            FROM "MYSELF"."BOOK WISHLIST" W JOIN "MYSELF"."BOOK" B
+                            ON (W."BOOK ID" = B.ID )
+                            WHERE W."USER ID" =:customer_id
+                                ''', [customer_id])
     res = dict_fetch_all(cursor)
     conn.close()
     return res
@@ -127,8 +130,11 @@ def get_electronics_wishlist(customer_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT ID, "ELECTRONICS ID" FROM "MYSELF"."ELECTRONICS WISHLIST" WHERE "USER ID" =:customer_id''',
-                   [customer_id])
+    cursor.execute('''SELECT W."ELECTRONICS ID", E."TITLE", E."PRICE"
+                                FROM "MYSELF"."ELECTRONICS WISHLIST" W JOIN "MYSELF"."ELECTRONICS" E
+                                ON (W."ELECTRONICS ID" = E.ID )
+                                WHERE W."USER ID" =:customer_id
+                                    ''', [customer_id])
     res = dict_fetch_all(cursor)
     conn.close()
     return res
@@ -146,7 +152,10 @@ def get_book_cart(customer_id, order_id = 1):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT "BOOK ID", "BOOK QUANTITY" FROM "MYSELF"."BOOK CART" WHERE "USER ID" =:customer_id AND "ORDER ID" =:order_id
+    cursor.execute('''SELECT C."BOOK ID", C."BOOK QUANTITY", B."TITLE", B."PRICE"
+                        FROM "MYSELF"."BOOK CART" C JOIN "MYSELF"."BOOK" B
+                        ON (C."BOOK ID" = B.ID )
+                        WHERE C."USER ID" =:customer_id AND C."ORDER ID" =:order_id
                             ''', [customer_id, order_id])
     res = dict_fetch_all(cursor)
     conn.close()
@@ -166,7 +175,10 @@ def get_electronics_cart(customer_id, order_id = 1):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT "ELECTRONICS ID", "ELECTRONICS QUANTITY" FROM "MYSELF"."ELECTRONICS CART" WHERE "USER ID" =:customer_id AND "ORDER ID" =:order_id
+    cursor.execute('''SELECT C."ELECTRONICS ID", C."ELECTRONICS QUANTITY", E."TITLE", E."PRICE"
+                            FROM "MYSELF"."ELECTRONICS CART" C JOIN "MYSELF"."ELECTRONICS" E
+                            ON (C."ELECTRONICS ID" = E.ID )
+                            WHERE C."USER ID" =:customer_id AND C."ORDER ID" =:order_id
                                 ''', [customer_id, order_id])
     res = dict_fetch_all(cursor)
     conn.close()
@@ -326,7 +338,7 @@ def get_average_rating(product_id):
     if sum == 0:
         return None
     else:
-        return round(sum/len, 2)
+        return round(sum/len, 0)
 
 
 def get_comment(product_id):
@@ -488,9 +500,26 @@ def bestseller():
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
-    cursor.execute('''SELECT b.TITLE , b.IMAGE_SRC , b.PRICE , b.ID from MYSELF.BOOK b ''')
-    res = dict_fetch_all(cursor)
+    cursor.execute('''SELECT TITLE , IMAGE_SRC , PRICE , ID, 
+                        (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID) "AVERAGE RATING"
+                        FROM MYSELF.BOOK B 
+                        ORDER BY "SALES COUNT" DESC 
+                        FETCH FIRST 5 ROWS ONLY''')
+    res1 = dict_fetch_all(cursor)
+    for item in res1:
+        if not isinstance(item['AVERAGE RATING'], type(None)):
+            item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
+    cursor.execute('''SELECT TITLE , IMAGE_SRC , PRICE , ID, 
+                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING"
+                            FROM MYSELF.ELECTRONICS E
+                            ORDER BY "SALES COUNT" DESC 
+                            FETCH FIRST 5 ROWS ONLY''')
+    res2 = dict_fetch_all(cursor)
+    for item in res2:
+        if not isinstance(item['AVERAGE RATING'], type(None)):
+            item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
     conn.close()
+    res = res1 + res2
     return res
 
 
@@ -528,3 +557,71 @@ def get_star_list(stars):
     for star in star_list:
         if len(star) == stars:
             return star
+
+def get_book_sales(book_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT "SALES COUNT" FROM MYSELF.BOOK WHERE ID =: book_id''', [book_id])
+    res = dict_fetch_all(cursor)
+    return int(res[0]['SALES COUNT'])
+
+def get_book_stock(book_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT "STOCK" FROM MYSELF.BOOK WHERE ID =: book_id''', [book_id])
+    res = dict_fetch_all(cursor)
+    print(res)
+    return int(res[0]['STOCK'])
+
+def get_electronics_sales(electronics_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT "SALES COUNT" FROM MYSELF.ELECTRONICS WHERE ID =: electronics_id''', [electronics_id])
+    res = dict_fetch_all(cursor)
+    return int(res[0]['SALES COUNT'])
+
+def get_electronics_stock(electronics_id):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT "STOCK" FROM MYSELF.ELECTRONICS WHERE ID =: electronics_id''', [electronics_id])
+    res = dict_fetch_all(cursor)
+    return int(res[0]['STOCK'])
+
+
+def recently_sold():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT TITLE , IMAGE_SRC , PRICE , DISTINCT(ID), 
+                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID) "AVERAGE RATING"
+                            FROM MYSELF.BOOK B 
+                            JOIN MYSELF."BOOK CART" C
+                            ON(B.ID = C."BOOK ID")
+                            JOIN MYSELF."ORDER HISTORY" O
+                            ON(C."ORDER ID" = O.ID)
+                            ORDER BY O."ORDER TIME" ASC 
+                            FETCH FIRST 5 ROWS ONLY''')
+    res1 = dict_fetch_all(cursor)
+    for item in res1:
+        if not isinstance(item['AVERAGE RATING'], type(None)):
+            item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
+    cursor.execute('''SELECT TITLE , IMAGE_SRC , PRICE , DISTINCT(ID), 
+                                (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING"
+                                FROM MYSELF.ELECTRONICS E
+                                JOIN MYSELF."ELECTRONICS CART" C
+                                ON(E.ID = C."ELECTRONICS ID")
+                                JOIN MYSELF."ORDER HISTORY" O
+                                ON(C."ORDER ID" = O.ID)
+                                ORDER BY O."ORDER TIME" ASC  
+                                FETCH FIRST 5 ROWS ONLY''')
+    res2 = dict_fetch_all(cursor)
+    for item in res2:
+        if not isinstance(item['AVERAGE RATING'], type(None)):
+            item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
+    conn.close()
+    res = res1 + res2
+    return res

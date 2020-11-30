@@ -52,7 +52,7 @@ def search(request):
     if(is_author(qtxt)):
         a_dict = get_dict_author(request , qtxt)
         return render(request, 'search_query/searchresult_author.html', a_dict)
-    b_dict  =  get_dict_book(request , qtxt)
+    b_dict = get_dict_book(request , qtxt)
     return render(request , 'search_query/searchresult_book.html' , b_dict)
 
 
@@ -66,6 +66,10 @@ def get_dict_author(request , author_name):
         ''', [author_name]
     )
     res = dict_fetch_all(cursor)
+    for item in res:
+        averageRating = get_average_rating(item['ID'])
+        if not isinstance(averageRating, type(None)):
+            item['star_list'] = get_star_list(int(averageRating))
     print(res)
     if(len(res)==0):
         return {}
@@ -102,6 +106,9 @@ def get_dict_electronic_ctg(request , ctg_name):
         return {}
     for electronics in res:
         electronics['BRAND_NAME'] = get_brand_name(electronics['BRAND ID'])
+        average_rating = get_average_rating(electronics['ID'])
+        if not isinstance(average_rating, type(None)):
+            electronics['star_list'] = get_star_list(int(average_rating))
     dict = user_details(request)
     dict['electronics'] = res
     dict['ctg_name'] = ctg_name
@@ -144,6 +151,10 @@ def get_dict_book(request , qtxt):
     book['userRating'] = get_customer_rating(dict['id'], res[0]['ID'])
     book['comments'] = get_comment(res[0]['ID'])
     book['image'] = res[0]['IMAGE_SRC']
+    if not isinstance(book['averageRating'], type(None)):
+        book['star_list'] = get_star_list(int(book['averageRating']))
+    if not isinstance(book['userRating'], type(None)):
+        book['star_list_user'] = get_star_list(int(book['userRating']))
     dict['theBook'] = book
 
     bookid = res[0]['ID']
@@ -155,6 +166,10 @@ def get_dict_book(request , qtxt):
         ''', [author_id , bookid]
     )
     res_author = dict_fetch_all(cursor)
+    for item in res_author:
+        averageRating = get_average_rating(item['ID'])
+        if not isinstance(averageRating, type(None)):
+            item['star_list'] = get_star_list(int(averageRating))
     dict['author_book'] = res_author
 
     # Finding other books of the same ctg
@@ -165,6 +180,10 @@ def get_dict_book(request , qtxt):
         ''', [ctg_id, bookid,author_id]
     )
     res_ctg = dict_fetch_all(cursor)
+    for item in res_ctg:
+        averageRating = get_average_rating(item['ID'])
+        if not isinstance(averageRating, type(None)):
+            item['star_list'] = get_star_list(int(averageRating))
     dict['ctg_book'] = res_ctg
 
     cursor = conn.cursor()

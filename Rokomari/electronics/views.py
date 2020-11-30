@@ -47,10 +47,15 @@ def electronics_category_details(request, ctg_id):
         cursor = conn.cursor()
         cursor.execute('''SELECT ID, TITLE, PRICE,  
                             (SELECT B.NAME FROM MYSELF.BRAND B WHERE B.ID = E."BRAND ID") BRAND_NAME,
+                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING",
                             IMAGE_SRC FROM MYSELF.ELECTRONICS E WHERE "CATEGORY ID" = :ctg_id
                         ''', [ctg_id])
         res = dict_fetch_all(cursor)
         conn.close()
+
+        for item in res:
+            if not isinstance(item['AVERAGE RATING'], type(None)):
+                item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
 
 
         dict = {}
@@ -116,10 +121,14 @@ def electronics_brand_details(request, brand_id):
         cursor = conn.cursor()
         cursor.execute('''SELECT ID, TITLE, PRICE,
                             (SELECT C.NAME FROM MYSELF."ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") CATEGORY_NAME,
+                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING",
                             IMAGE_SRC FROM MYSELF.ELECTRONICS E WHERE "BRAND ID"=:brand_id''', [brand_id])
         res = dict_fetch_all(cursor)
         conn.close()
 
+        for item in res:
+            if not isinstance(item['AVERAGE RATING'], type(None)):
+                item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
 
         dict = {}
         dict['electronics'] = res
@@ -146,7 +155,7 @@ def electronics_details(request, electronics_id):
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
     customer_id = request.session.get('id')
-    cursor.execute('''SELECT TITLE, PRICE, DESCRIPTION, WARRANTY, 
+    cursor.execute('''SELECT TITLE, PRICE, DESCRIPTION, WARRANTY, MODEL, STOCK, 
                             (SELECT  NAME FROM BRAND B WHERE B.ID = E."BRAND ID") "BRAND NAME",
                             (SELECT  NAME FROM "ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") "CATEGORY NAME",
                             (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING",
@@ -168,6 +177,12 @@ def electronics_details(request, electronics_id):
     electronics['userRating'] = res[0]['USER RATING']
     electronics['comments'] = get_comment(electronics_id)
     electronics['image'] = res[0]['IMAGE_SRC']
+    electronics['model'] = res[0]['MODEL']
+    electronics['stock'] = res[0]['STOCK']
+    if not isinstance(electronics['averageRating'], type(None)):
+        electronics['star_list'] = get_star_list(int(electronics['averageRating']))
+    if not isinstance(electronics['userRating'], type(None)):
+        electronics['star_list_user'] = get_star_list(int(electronics['userRating']))
 
     dict = {}
     dict['username'] = request.session.get('username')

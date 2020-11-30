@@ -24,12 +24,18 @@
                     <td>{{ title }}</td>
                     <td>{{ price }}</td>
                     <td><a href={% url 'home:CWO:delete_wishlist_item' id%}> Remove From Wishlist </a> </td>
-                    <td><a href={% url 'home:CWO:add_to_cart' id%}> Add To Cart </a> </td>
+                    <td><a href={% url 'home:CWO:add_to_cart_from_wishlist' id%}> Add To Cart </a> </td>
                 </tr>
             {% endfor %}
             </table>
         {% elif not wishlist %}
-            <p>Wishlist is empty</p>
+            <div class="featured-product product">
+                    <div class="container-fluid">
+                         <div class="section-header">
+                            <p>Wish List is empty</p>
+                         </div>
+                     </div>
+            </div>
         {% endif %}
         <br>
         <br>

@@ -1,6 +1,7 @@
 {% extends "home/home.html" %}
 {% load static %}
 
+
     {% block body_block%}
 
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
@@ -20,7 +21,7 @@
                 <th>Quantity</th>
                 <th></th>
             </tr>
-            {% for id, title, price, quantity in cart %}
+            {% for  id, title, price, quantity in cart %}
                 <tr>
                     <td>{{ title }}</td>
                     <td>{{ price }}</td>
@@ -36,7 +37,13 @@
             <br><input class="btn btn-primary" type="submit" value="Order"/>
             </form>
         {% elif not cart %}
-            <p>Cart is empty</p>
+            <div class="featured-product product">
+                    <div class="container-fluid">
+                         <div class="section-header">
+                            <p>Cart is empty</p>
+                         </div>
+                     </div>
+            </div>
         {% endif %}
         <br>
         <br>

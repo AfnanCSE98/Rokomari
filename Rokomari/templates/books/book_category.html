@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Rokomari-Search Results</title>
+        <title>Rokomari/Book category</title>
         {% load static %}
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="eCommerce HTML Template Free Download" name="keywords">
@@ -61,7 +61,10 @@
                                     <a href="{% url 'home:index' %}" class="dropdown-item">Login</a>
                                 </div>
                             </div>
-                        {% endif %}
+                            {% endif %}
+                            {% if username %}
+                                <a href="{% url 'home:home' %}" class="nav-item nav-link active">Home</a>
+                            {% endif %}
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Books</a>
                                 <div class="dropdown-menu">
@@ -107,7 +110,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-3">
                         <div class="logo">
-                            <a href="index.html">
+                          <a href="">
                                 <img src="{% static "home/img/logo.png" %}" alt="Logo">
                             </a>
                         </div>
@@ -234,7 +237,7 @@
                             <div class="contact-info">
                                 <div class="social">
                                     <a href=""><i class="fab fa-twitter"></i></a>
-                                    <a href=""><i class="fab fa-facebook-f"></i></a>
+                                    <a href=""https://www.facebook.com/rokomari/""><i class="fab fa-facebook-f"></i></a>
                                     <a href=""><i class="fab fa-linkedin-in"></i></a>
                                     <a href=""><i class="fab fa-instagram"></i></a>
                                     <a href=""><i class="fab fa-youtube"></i></a>

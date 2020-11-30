@@ -61,7 +61,10 @@
                                     <a href="{% url 'home:index' %}" class="dropdown-item">Login</a>
                                 </div>
                             </div>
-                        {% endif %}
+                            {% endif %}
+                            {% if username %}
+                                <a href="{% url 'home:home' %}" class="nav-item nav-link active">Home</a>
+                            {% endif %}
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Books</a>
                                 <div class="dropdown-menu">
@@ -189,74 +192,124 @@
                                             <h4>IN Stock: </h4>
                                             <h4>{{theBook.stock}}</h4>
                                         </div>  
+																				                                                                                                                 
+                                        <div class="action">
+                                            <a class="btn" href="{% url 'home:CWO:add_to_cart' theBook.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            <a class="btn" href="{% url 'home:CWO:add_to_wishlist' theBook.id%}"><i class="fa fa-shopping-bag"></i>Add to WishList</a>
+                                        </div>									
+																												
 										
 										
-										<br>ISBN : {{ theBook.isbn}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>      
+
+						<div class="row product-detail-bottom">
+                            <div class="col-lg-12">
+                                <ul class="nav nav-pills nav-justified">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="pill" href="#description">Description</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="pill" href="#specification">Specification</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="pill" href="#reviews">Reviews</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div id="description" class="container tab-pane active">
+                                        <h4>Product description</h4>
+                                        <p>
+											{% if theBook.summary %}
+											{{ theBook.summary }}
+											{% endif %}
+										</p>
+                                    </div>
+                                    <div id="specification" class="container tab-pane fade">
+                                        <h4>Product specification</h4>                                       
+										 ISBN : {{ theBook.isbn}}
 										<br>Edition : {{ theBook.edition }}
 										<br>Pages : {{ theBook.pages }}
 										<br>Language : {{ theBook.language }}																		
 										<br>Category : {{ theBook.category }}
-										<br><br>
-                                        
-                                                                            
-                                        <div class="action">
-                                            <a class="btn" href="{% url 'home:CWO:add_to_cart' theBook.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
-                                            <a class="btn" href="{% url 'home:CWO:add_to_wishlist' theBook.id%}"><i class="fa fa-shopping-bag"></i>Add to WishList</a>
-                                        </div>
-										<br>
-										<h3>Rating </h3>
-										{% if theBook.averageRating %}
-											 Average Rating :
-                                            <div class="ratting">
-                                                {% for i in theBook.star_list %}
-                                                 <i class="fa fa-star"></i>
-                                                {% endfor %}
-                                            </div>
-										{% elif not  theBook.averageRating %}
-											 Average Rating : NA
-										{% endif %}<br>
-										{% if theBook.userRating %}
-											 Your Rating :
-                                            <div class="ratting">
-                                                {% for i in theBook.star_list_user %}
-                                                    <i class="fa fa-star"></i>
-                                                {% endfor %}
-                                            </div>
-										{% elif not theBook.userRating %}
-											 Your Rating : NA
-										{% endif %}<br>
-										<form action="{% url 'home:RC:give_rating' theBook.id %}" method = 'get'>										
-											{% if theBook.userRating %}
-												<input class="btn btn-primary" type="submit" value="Modify Rating">
-											{% elif not theBook.useRating %}
-												<input class="btn btn-primary" type="submit" value="Submit Rating">
+										
+                                    </div>
+                                    <div id="reviews" class="container tab-pane fade">
+                                        <div class="reviews-submitted">
+											   <h3>Rating </h3>
+											{% if theBook.averageRating %}
+												 <div class="d-inline p-2 bg-dark text-white">Average Rating : </div> <br><br>
+												<div class="ratting">
+													{% for i in theBook.star_list %}
+													 <i class="fa fa-star"></i>
+													{% endfor %}
+												</div>
+											{% elif not  theBook.averageRating %}
+												 <div class="d-inline p-2 bg-dark text-white">Average Rating : </div> 
+												<div class="d-inline p-2 bg-primary text-white">NA</div>
+												<br><br>
 											{% endif %}
-											<input type="number" value=1 min=1 max = 5 name = {{ theBook.id }}>
-										</form>
-									    <br>
-										<h3>Comment Section</h3>
-										{% if theBook.comments %}
+											{% if theBook.userRating %}
+												 <div class="d-inline p-2 bg-dark text-white">Your Rating :</div>  <br><br>
+												<div class="ratting">
+													{% for i in theBook.star_list_user %}
+														<i class="fa fa-star"></i>
+													{% endfor %}
+												</div>
+											{% elif not theBook.userRating %}											  
+												 <div class="d-inline p-2 bg-dark text-white">Your Rating :</div> 
+												<div class="d-inline p-2 bg-primary text-white">NA</div>
+												<br><br>
+											{% endif %}
+											<form action="{% url 'home:RC:give_rating' theBook.id %}" method = 'get'>										
+												{% if theBook.userRating %}
+													<input class="btn btn-primary" type="submit" value="Modify Rating">
+												{% elif not theBook.useRating %}
+													<input class="btn btn-primary" type="submit" value="Submit Rating">
+												{% endif %}
+												<input type="number" value=1 min=1 max = 5 name = {{ theBook.id }}>
+											</form>											
+                                           
+                                        </div>
+                                        <div class="reviews-submit">
+                                            <h4>Comments</h4>
+                                            {% if theBook.comments %}
 											{% for a, b, c in theBook.comments %}
-												<br> {{ c }} :
-												<p>{{ b }}</p>
+												
+												<div class="d-inline p-2 bg-dark text-white">{{ c }}</div> : 
+												<div class="d-inline p-2 bg-primary text-white">{{ b }}</div>
+												<br><br>
 											{% endfor %}
 										{% elif not theBook.comments %}
 											<p>No Comment Available</p>
 										{% endif %}
 										<br>
-										<form action="{% url 'home:RC:add_comment' theBook.id %}" method = 'get'>
-										<input type="text" name = {{ theBook.id }}>
-										<input class="btn btn-primary" type="submit" value="Submit Comment">
-										</form>
-										
+                                            <div class="row form">                    
+                                                
+                                                   <form action="{% url 'home:RC:add_comment' theBook.id %}" method = 'get'>
+													<input type="text" placeholder="your comment" name = {{ theBook.id }}>
+													<div class="col-sm-4">
+                                                    <button>Submit</button>
+                                                </div>
+													</form>
+																								  
+                                                                                          
+                                            </div>										
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>                       
+                        </div>
                     </div>
 				</div>
             </div>
         </div>
+		
+						
+                        
 		
 	
 	<br><br><br><br><br>

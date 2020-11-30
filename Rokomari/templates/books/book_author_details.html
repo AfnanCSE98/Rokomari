@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Rokomari-Search Results</title>
+        <title>Books/{{author_name}}</title>
         {% load static %}
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="eCommerce HTML Template Free Download" name="keywords">
@@ -61,7 +61,10 @@
                                     <a href="{% url 'home:index' %}" class="dropdown-item">Login</a>
                                 </div>
                             </div>
-                        {% endif %}
+                            {% endif %}
+                            {% if username %}
+                                <a href="{% url 'home:home' %}" class="nav-item nav-link active">Home</a>
+                            {% endif %}
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Books</a>
                                 <div class="dropdown-menu">
@@ -107,7 +110,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-3">
                         <div class="logo">
-                            <a href="index.html">
+                          <a href="">
                                 <img src="{% static "home/img/logo.png" %}" alt="Logo">
                             </a>
                         </div>
@@ -152,26 +155,24 @@
 		  <div class="product-view">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-9">
                         <div class="row">
 						{% if book %}
 							{% for item in book %}
-								<div class="col-lg-3">
+								<div class="col-lg-4">
                         <div class="product-item">
                             <div class="product-title">
                                 <a href="#">{{ item.TITLE }}</a>
-                                <div class="ratting">
+                                <div class="ratting">									
                                     {% for i in item.star_list %}
                                         <i class="fa fa-star"></i>
                                     {% endfor %}
                                 </div>
-                            </div>
-                            <div class="product-image">                              
-                                  <img src="{{ item.IMAGE_SRC }}" alt="Product Image">                                                   
-                            </div>
+                            </div>                                           
+                                  <img src="{{ item.IMAGE_SRC }}" alt="Product Image">                                                                           
                             <div class="product-price">
                                 <h3><span>Price : </span>{{ item.PRICE }}</h3>
-                                <a class="btn" href={% url 'home:books:book_details' item.ID %}><i class="fa fa-shopping-cart"></i>Details</a>
+                                <a class="btn" href={% url 'home:books:book_details' item.ID %}><i></i>Details</a>
                             </div>
                         </div>
                     </div>

@@ -62,6 +62,9 @@
                                 </div>
                             </div>
                         {% endif %}
+                              {% if username %}
+                                <a href="{% url 'home:home' %}" class="nav-item nav-link active">Home</a>
+                            {% endif %}
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Books</a>
                                 <div class="dropdown-menu">
@@ -168,78 +171,129 @@
                                 <div class="col-md-7">
                                     <div class="product-content">
                                         <div class="title"><h2>{{ theElectronics.title }}</h2></div>
-                                        <div class="ratting">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+										<div class="ratting">
+                                            {% for i in theElectronics.star_list %}
+                                                <i class="fa fa-star"></i>
+                                            {% endfor %}
                                         </div>
-										
-										<div class="price">
-                                            <h4>Brand: </h4>
-                                            {{ theElectronics.brand }}
-                                        </div>
-										<div class="price">
-                                            <h4>Model: </h4>
-                                            {{ theElectronics.model }}
-                                        </div>
+																			
 										<div class="price">
                                             <h4>Price: </h4>
                                             <p>{{ theElectronics.price }} Tk</p>
-                                        </div>
-										<div class="quantity">
-                                            <h4>IN Stock: </h4>
-                                            <h4>{{theElectronics.stock}}</h4>
-                                        </div>  
-																											
-										<br>Category : {{ theElectronics.category }}
-										<br>Warranty : {{ theElectronics.warranty }} Year
-                                                                                                                    
+                                        </div>							                                                                                                             
                                         <div class="action">
                                             <a class="btn" href="{% url 'home:CWO:add_to_cart' theElectronics.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
                                             <a class="btn" href="{% url 'home:CWO:add_to_wishlist' theElectronics.id%}"><i class="fa fa-shopping-bag"></i>Add to WishList</a>
+                                        </div>									
+										
+                                    </div>
+                                </div>
+                            </div>
+                        </div>    
+
+
+						<div class="row product-detail-bottom">
+                            <div class="col-lg-12">
+                                <ul class="nav nav-pills nav-justified">                                  
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="pill" href="#specification">Specification</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="pill" href="#reviews">Reviews</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">                                   
+                                    <div id="specification" class="container tab-pane fade">
+                                        <div class="price">
+                                            <h4>Brand : {{ theElectronics.brand }}</h4>
+                                            
                                         </div>
-										<br>
-										<h3>Rating </h3>
-										{% if theElectronics.averageRating %}
-											 Average Rating : {{ theElectronics.averageRating }}
-										{% elif not  theElectronics.averageRating %}
-											 Average Rating : NA
-										{% endif %}<br>
-										{% if theElectronics.userRating %}
-											 Your Rating : {{ theElectronics.userRating }}
-										{% elif not theElectronics.userRating %}
-											 Your Rating : NA
-										{% endif %}<br>
-										<form action="{% url 'home:RC:give_rating' theElectronics.id %}" method = 'get'>										
-											{% if theElectronics.userRating %}
-												<input class="btn btn-primary" type="submit" value="Modify Rating">
-											{% elif not theElectronics.useRating %}
-												<input class="btn btn-primary" type="submit" value="Submit Rating">
+										<div class="price">
+                                            <h4>Model : {{ theElectronics.model }}</h4>
+                                            
+                                        </div>
+										<div class="quantity">
+                                            <h4>IN Stock: {{theElectronics.stock}}</h4>
+                                            
+                                        </div>  
+										<div class="quantity">
+                                            <h4>Category : {{ theElectronics.category }}</h4>
+                                            
+                                        </div>  
+										<div class="quantity">
+                                            <h4>Warranty : {{ theElectronics.warranty }} Year</h4>
+                                            
+                                        </div>  																							
+										
+                                    </div>
+                                    <div id="reviews" class="container tab-pane fade">
+                                        <div class="reviews-submitted">
+											   <h3>Rating </h3>
+											   
+											{% if theElectronics.averageRating %}
+												 <div class="d-inline p-2 bg-dark text-white">Average Rating : </div> <br><br>
+												<div class="ratting">
+													{% for i in theElectronics.star_list %}
+													 <i class="fa fa-star"></i>
+													{% endfor %}
+												</div>
+											{% elif not  theElectronics.averageRating %}
+												 <div class="d-inline p-2 bg-dark text-white">Average Rating : </div> 
+												<div class="d-inline p-2 bg-primary text-white">NA</div>
+												<br><br>
 											{% endif %}
-											<input type="number" value=1 min=1 max = 5 name = {{ theElectronics.id }}>
-										</form>
-									    <br>
-										<h3>Comment Section</h3>
-										{% if theElectronics.comments %}
+											
+											{% if theElectronics.userRating %}
+												 <div class="d-inline p-2 bg-dark text-white">Your Rating :</div>  <br><br>
+												<div class="ratting">
+													{% for i in theElectronics.star_list_user %}
+														<i class="fa fa-star"></i>
+													{% endfor %}
+												</div>
+											{% elif not theElectronics.userRating %}											  
+												 <div class="d-inline p-2 bg-dark text-white">Your Rating :</div> 
+												<div class="d-inline p-2 bg-primary text-white">NA</div>
+												<br><br>
+											{% endif %}
+											
+											<form action="{% url 'home:RC:give_rating' theElectronics.id %}" method = 'get'>										
+												{% if theElectronics.userRating %}
+													<input class="btn btn-primary" type="submit" value="Modify Rating">
+												{% elif not theElectronics.useRating %}
+													<input class="btn btn-primary" type="submit" value="Submit Rating">
+												{% endif %}
+												<input type="number" value=1 min=1 max = 5 name = {{ theElectronics.id }}>
+											</form>											
+                                           
+                                        </div>
+                                        <div class="reviews-submit">
+                                            <h4>Comments</h4>
+                                            {% if theElectronics.comments %}
 											{% for a, b, c in theElectronics.comments %}
-												<br> {{ c }} :
-												<p>{{ b }}</p>
+												
+												<div class="d-inline p-2 bg-dark text-white">{{ c }}</div> : 
+												<div class="d-inline p-2 bg-primary text-white">{{ b }}</div>
+												<br><br>
 											{% endfor %}
 										{% elif not theElectronics.comments %}
 											<p>No Comment Available</p>
 										{% endif %}
 										<br>
-										<form action="{% url 'home:RC:add_comment' theElectronics.id %}" method = 'get'>
-										<input type="text" name = {{ theElectronics.id }}>
-										<input class="btn btn-primary" type="submit" value="Submit Comment">
-										</form>
-										
+                                            <div class="row form">                    
+                                                
+                                                   <form action="{% url 'home:RC:add_comment' theElectronics.id %}" method = 'get'>
+													<input type="text" placeholder="your comment" name = {{ theElectronics.id }}>
+													<div class="col-sm-4">
+                                                    <button>Submit</button>
+                                                </div>
+													</form>																
+                                                            
+                                            </div>										
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>                       
                     </div>
 				</div>
             </div>
