@@ -509,6 +509,7 @@ def bestseller():
     for item in res1:
         if not isinstance(item['AVERAGE RATING'], type(None)):
             item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
+            item['type'] = 'book'
     cursor.execute('''SELECT TITLE , IMAGE_SRC , PRICE , ID, 
                             (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING"
                             FROM MYSELF.ELECTRONICS E

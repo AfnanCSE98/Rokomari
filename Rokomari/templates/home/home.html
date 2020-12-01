@@ -231,7 +231,11 @@
                             </div>
                             <div class="product-price">
                                 <h3><span>Price : </span>{{ book.PRICE }}</h3>
+                                {% if book.type %}
                                 <a class="btn" href={% url 'home:books:book_details' book.ID %}><i class="fa fa-shopping-cart"></i>Details</a>
+                                {% elif not book.type %}
+                                <a class="btn" href={% url 'home:electronics:electronics_details' book.ID %}><i class="fa fa-shopping-cart"></i>Details</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
