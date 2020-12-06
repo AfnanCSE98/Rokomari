@@ -1,0 +1,48 @@
+{% extends "home/home.html" %}
+{% load static %}
+
+    {% block sliding_block %}
+    {% endblock %}
+
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h1>ADD ELECTRONICS PAGE</h1>
+                </div>
+            </div>
+        </div>
+        <div class="login">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="login-form">
+                            <div class="row">
+								<form method="post" novalidate>
+								  {% csrf_token %}
+
+									{{ form.as_p }}
+
+								  <button class="btn" type="submit">ADD</button>
+								</form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h5><a href={% url 'home:admin' %}> Return to Admin Page </a> </h5>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block best_seller  %}
+
+    {% endblock %}

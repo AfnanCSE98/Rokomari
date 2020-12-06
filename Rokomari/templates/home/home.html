@@ -22,6 +22,9 @@
 
         <!-- Template Stylesheet -->
         <link rel="stylesheet" type="text/css" href="{% static 'search_query/css/style.css' %}" />
+        <style>
+            h1 {text-align: center;}
+        </style>
     </head>
 	
 <body>
@@ -92,6 +95,9 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{username}}</a>
                                 <div class="dropdown-menu">
                                     <a href={% url 'home:user_profile' %} class="dropdown-item">Profile</a>
+                                    {% if account_type == 'A' %}
+                                        <a href={% url 'home:admin' %} class="dropdown-item">Admin Page</a>
+                                    {% endif %}
                                     <a href={% url 'home:CWO:all_order' %} class="dropdown-item">Orders</a>
 									<a href={% url 'home:index' %} class="dropdown-item">Logout</a>
                                 </div>

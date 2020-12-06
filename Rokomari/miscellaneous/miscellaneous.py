@@ -87,6 +87,42 @@ def max_wishlist_id(product_id):
         return res[0][0]
 
 
+def max_electronics_id():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT MAX(TO_NUMBER(ID)) FROM ELECTRONICS ''')
+    res = cursor.fetchall()
+    conn.close()
+    if isinstance(res[0][0], type(None)):
+        return 0
+    else:
+        return res[0][0]
+
+def max_brand_id():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT MAX(TO_NUMBER(ID)) FROM BRAND ''')
+    res = cursor.fetchall()
+    conn.close()
+    if isinstance(res[0][0], type(None)):
+        return 0
+    else:
+        return res[0][0]
+
+def max_electronics_category_id():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT MAX(TO_NUMBER(ID)) FROM "ELECTRONICS CATEGORY" ''')
+    res = cursor.fetchall()
+    conn.close()
+    if isinstance(res[0][0], type(None)):
+        return 0
+    else:
+        return res[0][0]
+
 def max_cart_id(product_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -626,3 +662,99 @@ def recently_sold():
     conn.close()
     res = res1 + res2
     return res
+
+def get_brand_id(brand_name):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    print(brand_name)
+    brand_name = brand_name.upper()
+    cursor.execute('''
+                    SELECT ID FROM BRAND WHERE UPPER(TRIM("NAME")) =: brand_name''', [brand_name])
+    res = dict_fetch_all(cursor)
+    return res[0]['ID']
+
+def get_electronics_category_id(category_name):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    category_name = category_name.upper()
+    cursor.execute('''
+                        SELECT ID FROM "ELECTRONICS CATEGORY" WHERE UPPER(TRIM("NAME")) =: category_name''', [category_name])
+    res = dict_fetch_all(cursor)
+    return res[0]['ID']
+
+def adding_electronics( title, model, price, image_src, description, warranty, brand_id, category_id, number_of_items_added):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    t_title = title.upper()
+    t_model = model.upper()
+    cursor.execute('''
+    SELECT * FROM ELECTRONICS WHERE UPPER(TRIM(TITLE)) =: t_title AND UPPER(TRIM(MODEL)) =: t_model AND "BRAND ID" =: brand_id''',
+                   [t_title, t_model, brand_id])
+    res = dict_fetch_all(cursor)
+    if len(res) == 0:
+        sales_count = 0
+        id = max_electronics_id() + 1
+        cursor.execute('''
+        INSERT INTO ELECTRONICS VALUES ( :id, :title, :model, :price, :image_src, :descricption, :warranty, :brand_id, :category_id, :number_of_items_added, 
+        :sales_count)''', [id, title, model, price, image_src, description, warranty, brand_id, category_id, number_of_items_added, sales_count])
+        conn.commit()
+    conn.close()
+
+def updating_electronics( title, model, price, warranty, brand_id, number_of_items_added):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    t_title = title.upper()
+    t_model = model.upper()
+    cursor.execute('''
+    SELECT * FROM ELECTRONICS WHERE UPPER(TRIM(TITLE)) =: t_title AND UPPER(TRIM(MODEL)) =: t_model AND "BRAND ID" =: brand_id''',
+                   [t_title, t_model, brand_id])
+    res = dict_fetch_all(cursor)
+    print(len(res))
+    if len(res) > 0:
+        id = res[0]['ID']
+        print(id)
+        stock = int(res[0]['STOCK']) + int(number_of_items_added)
+        cursor.execute('''
+        UPDATE ELECTRONICS
+        SET PRICE =: price, WARRANTY =: warranty, STOCK =: stock
+        WHERE ID =: id''', [price, warranty, stock, id])
+        conn.commit()
+    conn.close()
+
+def adding_brand( name, phone_number, web_url, email, address, image_src):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    t_name = name.upper()
+    cursor.execute('''
+        SELECT * FROM BRAND WHERE UPPER(TRIM("NAME")) =: t_name''',
+                   [t_name])
+    res = dict_fetch_all(cursor)
+    if len(res) == 0:
+        id = max_brand_id() + 1
+        cursor.execute('''
+            INSERT INTO BRAND VALUES ( :id, :name, :phone_number, :web_url, :email, :address, :image_src 
+            )''', [ id, name, phone_number, web_url, email, address, image_src])
+        conn.commit()
+    conn.close()
+
+def adding_electronics_category(name, description, image_src):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    t_name = name.upper()
+    cursor.execute('''
+            SELECT * FROM "ELECTRONICS CATEGORY" WHERE UPPER(TRIM("NAME")) =: t_name''',
+                   [t_name])
+    res = dict_fetch_all(cursor)
+    if len(res) == 0:
+        id = max_electronics_category_id() + 1
+        cursor.execute('''
+                INSERT INTO "ELECTRONICS CATEGORY" VALUES ( :id, :name, :description, :image_src 
+                )''', [id, name, description, image_src])
+        conn.commit()
+    conn.close()

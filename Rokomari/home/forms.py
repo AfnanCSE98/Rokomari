@@ -47,3 +47,35 @@ class UserProfileForm(forms.Form):
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
     address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
     account_type = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class AddElectronicsForm(forms.Form):
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    model = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    price = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    image_src = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    description = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    warranty = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    category = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    brand = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    number_of_items_added = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class UpdateElectronicsForm(forms.Form):
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    model = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    price = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    warranty = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    brand = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    number_of_items_added = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class AddBrandForm(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    phone_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    web_url = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    image_src = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class AddElectronicsCategoryForm(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    description = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    image_src = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))

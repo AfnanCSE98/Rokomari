@@ -1,0 +1,92 @@
+{% extends "home/home.html" %}
+{% load static %}
+
+    {% block sliding_block %}
+    {% endblock %}
+
+
+    {% block body_block%}
+
+    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h1>ADMIN PAGE</h1>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href="#"> ADD BOOK </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href="#"> ADD PUBLISHER </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href="#"> ADD AUTHOR </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href="#"> ADD BOOK CATEGORY </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href={% url 'home:add_electronics' %}> ADD ELECTRONICS </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href={% url 'home:update_electronics' %}> UPDATE ELECTRONICS </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href={% url 'home:add_brand' %}> ADD BRAND </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href={% url 'home:add_electronics_category' %}> ADD ELECTRONICS CATEGORY </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href="#"> DELIVER ORDER </a> </h3>
+                </div>
+            </div>
+        </div>
+        <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <h3><a href="#"> ADMIN DASHBOARD </a> </h3>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block best_seller  %}
+
+    {% endblock %}

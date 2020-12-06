@@ -263,11 +263,14 @@ def order(request):
     order_id = int(max_order_id()) + 1
     print("order_id :" + str(order_id))
     status = 'Pending'
+    temp = order_id
+    order_id = 5000
     cursor.execute('''
                         INSERT INTO "MYSELF"."ORDER HISTORY"("ID" , "USER ID", "STATUS")
                         VALUES(:order_id,:customer_id,:status)
                         ''', [order_id, customer_id, status])
     #complex query
+    order_id = temp
     for item in res1:
         quantity = request.GET.get(item['BOOK ID'])
         book_id = item['BOOK ID']
@@ -403,7 +406,8 @@ def all_order(request):
         p['lst'] = lt
         p['status'] = get_order_status(it)
         p['order_id'] = it
-        f_list.append(p)
+        if p['status'] != 'undetermined':
+            f_list.append(p)
     dict['allOrderItems'] = f_list
     return render(request, 'CWO/allOrders.html', dict)
 

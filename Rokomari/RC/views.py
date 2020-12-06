@@ -50,11 +50,13 @@ def add_comment(request, product_id):
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
     if int(product_id) < THRESHOLD:
+        id = 5000
         cursor.execute('''
                     INSERT INTO "MYSELF"."COMMENT"("ID", "DESCRIPTION", "BOOK ID", "USER ID")
                     VALUES( :id, :pcomment, :product_id, :customer_id)
                     ''', [id, pcomment, product_id, customer_id])
     else:
+        id = 5000
         cursor.execute('''
                             INSERT INTO "MYSELF"."COMMENT"("ID", "DESCRIPTION", "ELECTRONICS ID", "USER ID")
                             VALUES( :id, :pcomment, :product_id, :customer_id)

@@ -158,13 +158,15 @@ def electronics_details(request, electronics_id):
     cursor.execute('''SELECT TITLE, PRICE, DESCRIPTION, WARRANTY, MODEL, STOCK, 
                             (SELECT  NAME FROM BRAND B WHERE B.ID = E."BRAND ID") "BRAND NAME",
                             (SELECT  NAME FROM "ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") "CATEGORY NAME",
-                            (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING",
+                            GET_AVERAGE_ELECTRONICS_RATING(ID) "AVERAGE RATING",
                             (SELECT TO_NUMBER(STARS) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID AND "USER ID" =: customer_id) "USER RATING",
                             IMAGE_SRC FROM ELECTRONICS E WHERE "ID" =: book_id
                             ''', [customer_id, electronics_id])
     res = dict_fetch_all(cursor)
     conn.close()
-
+    """
+    (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID)
+    """
     electronics = {}
     electronics['title'] = res[0]['TITLE']
     electronics['price'] = res[0]['PRICE']

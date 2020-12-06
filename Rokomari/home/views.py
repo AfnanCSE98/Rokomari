@@ -153,3 +153,246 @@ def user_profile(request):
         return render(request, 'home/index.html', {'form': form})
 
 
+def admin(request):
+    dict = {}
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+    dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+    dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
+    return render(request, 'home/admin.html', dict)
+
+def add_electronics(request):
+    if request.method == "POST":
+        form = AddElectronicsForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            model = form.cleaned_data['model']
+            price = form.cleaned_data['price']
+            image_src = form.cleaned_data['image_src']
+            description = form.cleaned_data['description']
+            warranty = form.cleaned_data['warranty']
+            category = form.cleaned_data['category']
+            brand = form.cleaned_data['brand']
+            number_of_items_added = form.cleaned_data['number_of_items_added']
+            brand_id = get_brand_id(brand)
+            category_id = get_electronics_category_id(category)
+            if isinstance(brand_id, type(None)) or isinstance( category_id, type(None)):
+                dict = {}
+                dict['username'] = request.session.get('username')
+                dict['id'] = request.session.get('id')
+                dict['mobile'] = request.session.get('mobile')
+                dict['email'] = request.session.get('email')
+                dict['address'] = request.session.get('address')
+                dict['account_type'] = request.session.get('account_type')
+                dict['password'] = request.session.get('password')
+                dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+                dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+                dict['form'] = AddElectronicsForm()
+                return render(request, 'home/add_electronics.html', dict)
+            print(description)
+            adding_electronics(title, model, price, image_src, description, warranty, category_id, brand_id, number_of_items_added)
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddElectronicsForm()
+            return render( request, 'home/add_electronics.html', dict)
+        else:
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddElectronicsForm()
+            return render(request, 'home/add_electronics.html', dict)
+    else:
+        dict = {}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+        dict['form'] = AddElectronicsForm()
+        return render(request, 'home/add_electronics.html', dict)
+
+def update_electronics(request):
+    if request.method == "POST":
+        form = UpdateElectronicsForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            model = form.cleaned_data['model']
+            price = form.cleaned_data['price']
+            warranty = form.cleaned_data['warranty']
+            brand = form.cleaned_data['brand']
+            number_of_items_added = form.cleaned_data['number_of_items_added']
+            brand_id = get_brand_id(brand)
+            if isinstance(brand_id, type(None)):
+                dict = {}
+                dict['username'] = request.session.get('username')
+                dict['id'] = request.session.get('id')
+                dict['mobile'] = request.session.get('mobile')
+                dict['email'] = request.session.get('email')
+                dict['address'] = request.session.get('address')
+                dict['account_type'] = request.session.get('account_type')
+                dict['password'] = request.session.get('password')
+                dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+                dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+                dict['form'] = AddElectronicsForm()
+                return render(request, 'home/add_electronics.html', dict)
+            updating_electronics(title, model, price, warranty, brand_id, number_of_items_added)
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = UpdateElectronicsForm()
+            return render( request, 'home/update_electronics.html', dict)
+        else:
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = UpdateElectronicsForm()
+            return render(request, 'home/update_electronics.html', dict)
+    else:
+        dict = {}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+        dict['form'] = UpdateElectronicsForm()
+        return render(request, 'home/update_electronics.html', dict)
+
+def add_brand(request):
+    if request.method == "POST":
+        form = AddBrandForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            phone_number = form.cleaned_data['phone_number']
+            web_url = form.cleaned_data['web_url']
+            email = form.cleaned_data['email']
+            address = form.cleaned_data['address']
+            image_src = form.cleaned_data['image_src']
+            adding_brand( name, phone_number, web_url, email, address, image_src)
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddBrandForm()
+            return render(request, 'home/add_brand.html', dict)
+        else:
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddBrandForm()
+            return render(request, 'home/add_brand.html', dict)
+    else:
+        dict = {}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+        dict['form'] = AddBrandForm()
+        return render(request, 'home/add_brand.html', dict)
+
+def add_electronics_category(request):
+    if request.method == "POST":
+        form = AddElectronicsCategoryForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+            image_src = form.cleaned_data['image_src']
+            adding_electronics_category(name, description, image_src)
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddElectronicsCategoryForm()
+            return render(request, 'home/add_electronics_category.html', dict)
+        else:
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddElectronicsCategoryForm()
+            return render(request, 'home/add_electronics_category.html', dict)
+    else:
+        dict = {}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+        dict['form'] = AddElectronicsCategoryForm()
+        return render(request, 'home/add_electronics_category.html', dict)

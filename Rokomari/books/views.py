@@ -234,13 +234,15 @@ def book_details(request, book_id):
                         (SELECT NAME FROM AUTHOR A WHERE A.ID = B."AUTHOR ID") "AUTHOR NAME", 
                         (SELECT  NAME FROM PUBLISHER P WHERE P.ID = B."PUBLISHER ID") "PUBLISHER NAME",
                         (SELECT  NAME FROM "BOOK CATEGORY" C WHERE C.ID = B."CATEGORY ID") "CATEGORY NAME",
-                        (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID) "AVERAGE RATING",
+                        GET_AVERAGE_BOOK_RATING(ID) "AVERAGE RATING",
                         (SELECT TO_NUMBER(STARS) FROM RATING R WHERE R."BOOK ID" = B.ID AND "USER ID" =: customer_id) "USER RATING",
                         IMAGE_SRC FROM BOOK B WHERE "ID" =: book_id
                         ''', [customer_id, book_id])
     res = dict_fetch_all(cursor)
     conn.close()
-
+    """
+    (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID)
+    """
 
     book = {}
     book['isbn'] = res[0]['ISBN']
@@ -258,7 +260,7 @@ def book_details(request, book_id):
     book['userRating'] = res[0]['USER RATING']
     book['comments'] = get_comment(book_id)
     book['image'] = res[0]['IMAGE_SRC']
-    if not isinstance(book['averageRating'], type(None)):
+    if not isinstance(book['averageRating'], type(None)) and book['averageRating'] != '-1':
         book['star_list'] = get_star_list(int(book['averageRating']))
     if not isinstance(book['userRating'], type(None)):
         book['star_list_user'] = get_star_list(int(book['userRating']))
