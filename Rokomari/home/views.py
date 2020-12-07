@@ -2,7 +2,8 @@ from django.shortcuts import render
 from .forms import *
 from miscellaneous.miscellaneous import *
 from django.shortcuts import redirect
-
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import reverse
 
 # Create your views here.
 def index(request):
@@ -153,6 +154,37 @@ def user_profile(request):
         return render(request, 'home/index.html', {'form': form})
 
 
+
+def admin_login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            if is_admin(username, password):
+                all_customers = all_users()
+                dict = get_current_customer(all_customers, username)
+                print("Hi admin " + username)
+                request.session['username'] = dict['NAME']
+                request.session['id'] = dict['ID']
+                request.session['mobile'] = dict['PHONE NUMBER']
+                request.session['email'] = dict['EMAIL']
+                request.session['address'] = dict['ADDRESS']
+                #request.session['password'] = dict['PASSWORD']
+                request.session['account_type'] = dict['TYPES']
+                request.session['login_message'] = "Login Successful! Welcome, "+dict['NAME']
+                return redirect('/admindashboard/')
+            else:
+                form = LoginForm()
+                dict = {}
+                dict['login_message'] = "Login Failed! Sorry"
+                dict['form'] = form
+                return render(request, 'home/admin_login.html', dict)
+    else:
+        request.session.flush()
+        form = LoginForm()
+        return render(request, 'home/admin_login.html', {'form': form})
+
 def admin(request):
     dict = {}
     dict['username'] = request.session.get('username')
@@ -164,6 +196,11 @@ def admin(request):
     dict['password'] = request.session.get('password')
     dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
     dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
+    x,y =  get_comment_rating_cnts()
+    dict['no_of_comment'] = x
+    dict['no_of_rating']  = y
+    print(dict)
 
     return render(request, 'home/admin.html', dict)
 
@@ -396,3 +433,282 @@ def add_electronics_category(request):
         dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
         dict['form'] = AddElectronicsCategoryForm()
         return render(request, 'home/add_electronics_category.html', dict)
+
+def add_publisher(request):
+    pass
+
+def add_author(request):
+    if request.method == "POST":
+        form = AddAuthor_Form(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            profile = form.cleaned_data['profile']
+
+            add_new_author(name , profile)
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddAuthor_Form()
+            return render(request, 'home/add_author.html', dict)
+        else:
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddAuthor_Form()
+            return render(request, 'home/add_author.html', dict)
+    else:
+        dict = {}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+        dict['form'] = AddAuthor_Form()
+        return render(request, 'home/add_author.html', dict)
+
+def add_book_category(request):
+    if request.method == "POST":
+        form = AddCategory_Form(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+
+            add_new_book_category(name , description)
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddCategory_Form()
+            return render(request, 'home/add_category.html', dict)
+        else:
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = AddCategory_Form()
+            return render(request, 'home/add_category.html', dict)
+    else:
+        dict = {}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+        dict['form'] = AddCategory_Form()
+        return render(request, 'home/add_category.html', dict)
+
+
+def add_book(request):
+    if request.method == "POST":
+        form = Addbook_Form(request.POST)
+        print(form.errors)
+        if form.is_valid():
+            isbn = form.cleaned_data['ISBN']
+            title = form.cleaned_data['Title']
+            edition = form.cleaned_data['Edition']
+            country = form.cleaned_data['Country']
+            price = form.cleaned_data['Price']
+            image_src = form.cleaned_data['Image_src']
+            summary = form.cleaned_data['Summary']
+            no_of_pages = form.cleaned_data['No_of_Pages']
+            category = form.cleaned_data['Category']
+            author = form.cleaned_data['Author']
+            publisher = form.cleaned_data['Publisher']
+            language = form.cleaned_data['Language']
+            stock = form.cleaned_data['Stock']
+
+            pub_id = get_publisher_id(publisher)
+            print(pub_id)
+            if pub_id==-1:
+                print("pub nai")
+                dict = {}
+                dict['username'] = request.session.get('username')
+                dict['id'] = request.session.get('id')
+                dict['mobile'] = request.session.get('mobile')
+                dict['email'] = request.session.get('email')
+                dict['address'] = request.session.get('address')
+                dict['account_type'] = request.session.get('account_type')
+                dict['password'] = request.session.get('password')
+                dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+                dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+                dict['form'] = Addbook_Form()
+                return render(request, 'home/add_book.html', dict)
+
+            add_new_book(isbn , title , edition , no_of_pages , country ,
+                     language , price ,image_src , summary , author , category , publisher,
+                     stock)
+            print("done")
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = Addbook_Form()
+            return render( request, 'home/add_book.html', dict)
+        else:
+            print("form valid na")
+            dict = {}
+            dict['username'] = request.session.get('username')
+            dict['id'] = request.session.get('id')
+            dict['mobile'] = request.session.get('mobile')
+            dict['email'] = request.session.get('email')
+            dict['address'] = request.session.get('address')
+            dict['account_type'] = request.session.get('account_type')
+            dict['password'] = request.session.get('password')
+            dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+            dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+            dict['form'] = Addbook_Form()
+            return render(request, 'home/add_book.html', dict)
+    else:
+        dict = {}
+        dict['username'] = request.session.get('username')
+        dict['id'] = request.session.get('id')
+        dict['mobile'] = request.session.get('mobile')
+        dict['email'] = request.session.get('email')
+        dict['address'] = request.session.get('address')
+        dict['account_type'] = request.session.get('account_type')
+        dict['password'] = request.session.get('password')
+        dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+        dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+        dict['form'] = Addbook_Form()
+        return render(request, 'home/add_book.html', dict)
+
+
+def all_books(request):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT ID, TITLE, (SELECT "NAME" FROM MYSELF."BOOK CATEGORY" C WHERE C.ID = B."CATEGORY ID") CATEGORY_NAME,
+                                        (SELECT "NAME" FROM MYSELF.PUBLISHER P WHERE P.ID = B."PUBLISHER ID") PUBLISHER_NAME,
+                                        (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."BOOK ID" = B.ID) "AVERAGE RATING",
+                                        IMAGE_SRC,    PRICE FROM MYSELF.BOOK B 
+                        ''')
+    res = dict_fetch_all(cursor)
+    conn.close()
+
+    for item in res:
+        if not isinstance(item['AVERAGE RATING'], type(None)):
+            item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
+
+    dict = {}
+    dict['book'] = res
+    #dict['author_name'] = get_author_name(author_id)
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+    #dict['author_id'] = author_id
+    dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+    dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
+    return render(request, 'home/all_books.html', dict)
+
+
+def all_electronics(request):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT ID, TITLE, PRICE,  
+                                (SELECT B.NAME FROM MYSELF.BRAND B WHERE B.ID = E."BRAND ID") BRAND_NAME,
+                                (SELECT  ROUND(AVG(TO_NUMBER(STARS))) FROM RATING R WHERE R."ELECTRONICS ID" = E.ID) "AVERAGE RATING",
+                                IMAGE_SRC FROM MYSELF.ELECTRONICS E 
+                            ''')
+    res = dict_fetch_all(cursor)
+    conn.close()
+
+    for item in res:
+        if not isinstance(item['AVERAGE RATING'], type(None)):
+            item['star_list'] = get_star_list(int(item['AVERAGE RATING']))
+
+    dict = {}
+    dict['electronics'] = res
+    #dict['category_name'] = get_electronics_category_name(ctg_id)
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+    dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+    dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
+    return render(request, 'home/all_electronics.html', dict)
+
+
+def all_orders(request):
+    dict = {}
+    dict['username'] = request.session.get('username')
+    dict['id'] = request.session.get('id')
+    dict['mobile'] = request.session.get('mobile')
+    dict['email'] = request.session.get('email')
+    dict['address'] = request.session.get('address')
+    dict['account_type'] = request.session.get('account_type')
+    dict['password'] = request.session.get('password')
+    dict['cart_size'] = get_book_cart_len(dict['id'], 1) + get_electronics_cart_len(dict['id'], 1)
+    dict['wishlist_size'] = get_book_wishlist_len(dict['id']) + get_electronics_wishlist_len(dict['id'])
+
+    orders = get_all_orders()
+    dict['all_orders'] = orders
+    dict['form'] = DeliveredForm()
+
+    #form = DeliveredForm(request.POST or None)
+    if request.method == 'POST' :
+        kotono = int(request.POST.get('kotono'))
+        print(type(kotono))
+        # is_delivered = form.cleaned_data['delivered']
+        # if is_delivered:
+        c = 1
+        for i in orders:
+            if c == kotono:
+                update_order_status(i['order_id'])
+                break
+            c = c + 1
+        #return HttpResponseRedirect(reverse('all_orders'))
+        return redirect('/all-orders')
+
+    return render(request, 'home/all_orders.html', dict)
+
+

@@ -1,92 +1,712 @@
-{% extends "home/home.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Rokomari/Home</title>
+        {% load static %}
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="eCommerce HTML Template Free Download" name="keywords">
+        <meta content="eCommerce HTML Template Free Download" name="description">
 
-    {% block sliding_block %}
-    {% endblock %}
+        <!-- Favicon -->
+        <link href="{% static "search_query/img/favicon.ico" %}" rel="icon">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Source+Code+Pro:700,900&display=swap" rel="stylesheet">
+
+        <!-- CSS Libraries -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'search_query/lib/slick/slick.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'search_query/lib/slick/slick-theme.css' %}" />
+
+        <!-- Template Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="{% static 'search_query/css/style.css' %}" />
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/iconfonts/ionicons/dist/css/ionicons.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'assets/vendors/css/vendor.bundle.addons.css' %}">
+		<!-- endinject -->
+		<!-- plugin css for this page -->
+		<!-- End plugin css for this page -->
+		<!-- inject:css -->
+		<link rel="stylesheet" type="text/css" href="{% static 'assets/css/shared/style.css' %}">
+		<!-- endinject -->
+		<!-- Layout styles -->
+		<link rel="stylesheet" type="text/css" href="{% static 'assets/css/demo_1/style.css' %}">
+		<!-- End Layout styles -->
+		<link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}" />
+		
+        <style>
+            h1 {text-align: center;}
+        </style>
+    </head>
+	
+<body>
+<!-- Top bar Start -->
+        <div class="top-bar">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <i class="fa fa-envelope"></i>
+                        admin@rokomari.com
+                    </div>
+                    <div class="col-sm-6">
+                        <i class="fa fa-phone-alt"></i>
+                        +012-345-6789
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Top bar End -->
+
+        <!-- Nav Bar Start -->
+        <div class="nav">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+                    <a href="#" class="navbar-brand">MENU</a>
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                        <div class="navbar-nav mr-auto">
+                            {% if not username %}
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Register</a>
+                                <div class="dropdown-menu">
+                                    <a href="{% url 'home:signup' %}" class="dropdown-item">SignUp</a>
+                                    <a href="{% url 'home:index' %}" class="dropdown-item">Login</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                          {% if username %}
+                                <a href="{% url 'home:home' %}" class="nav-item nav-link active">Home</a>
+                            {% endif %}
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Books</a>
+                                <div class="dropdown-menu">
+								    {% if username %}
+                                    <a href={% url 'home:books:book_author' %} class="dropdown-item">Author</a>
+                                    <a href={% url 'home:books:book_category' %} class="dropdown-item">Category</a>
+                                    <a href={% url 'home:books:book_publisher' %} class="dropdown-item">Publishers</a>
+									{% endif %}
+                                </div>
+                            </div>
+							<div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Electronics</a>
+                                <div class="dropdown-menu">
+								{% if username %}
+                                    <a href={% url 'home:electronics:electronics_brand' %} class="dropdown-item">Brand</a>
+                                    <a href={% url 'home:electronics:electronics_category' %} class="dropdown-item">Category</a>
+								{% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="navbar-nav ml-auto">
+                            <div class="nav-item dropdown">
+							{% if username %}
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{username}}</a>
+                                <div class="dropdown-menu">
+                                    <a href={% url 'home:user_profile' %} class="dropdown-item">Profile</a>
+                                    {% if account_type == 'A' %}
+                                        <a href={% url 'home:admin' %} class="dropdown-item">Admin Page</a>
+                                    {% endif %}
+                                    <a href={% url 'home:CWO:all_order' %} class="dropdown-item">Orders</a>
+									<a href={% url 'home:index' %} class="dropdown-item">Logout</a>
+                                </div>
+							{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Nav Bar End -->
+		
+		<!-- Bottom Bar Start -->
+        <div class="bottom-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="logo">                         
+                               <a href="">
+                                <img src="{% static "home/img/logo.png" %}" alt="Logo">
+                            </a>            
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <form action = "/search" method = "Get">
+                        <div class="search">
+                            <input type="text" placeholder="Search" name="search_txt">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user">
+                            <a href="{% url 'home:CWO:wishlist' %}" class="btn wishlist">
+                                <i class="fa fa-heart"></i>
+                                <span>{{wishlist_size}}</span>
+                            </a>
+                            <a href="{% url 'home:CWO:cart' %}" class="btn cart">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>{{cart_size}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Bar End -->
+		
 
 
-    {% block body_block%}
+		<div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
 
-    <link rel="stylesheet" href="{% static "books/css/style.css" %}">
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h1>ADMIN PAGE</h1>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href="#"> ADD BOOK </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href="#"> ADD PUBLISHER </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href="#"> ADD AUTHOR </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href="#"> ADD BOOK CATEGORY </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href={% url 'home:add_electronics' %}> ADD ELECTRONICS </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href={% url 'home:update_electronics' %}> UPDATE ELECTRONICS </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href={% url 'home:add_brand' %}> ADD BRAND </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href={% url 'home:add_electronics_category' %}> ADD ELECTRONICS CATEGORY </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href="#"> DELIVER ORDER </a> </h3>
-                </div>
-            </div>
-        </div>
-        <div class="featured-product product">
-            <div class="container-fluid">
-                <div class="section-header">
-                    <h3><a href="#"> ADMIN DASHBOARD </a> </h3>
-                </div>
-            </div>
-        </div>
-    {% endblock %}
+            <li class="nav-item nav-category">Main Menu</li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home:admin' %}">
+                <i class="menu-icon typcn typcn-document-text"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <i class="menu-icon typcn typcn-coffee"></i>
+                <span class="menu-title">Add/Update Items</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:add_book' %}">New Book</a>
+                  </li>                 
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:add_author' %}">New Author</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:add_book_category' %}">New Book Category</a>
+                  </li>
+				  <li class="nav-item">
+                    <a class="nav-link" href="">New Publisher</a>
+                  </li>
+				  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:add_electronics' %}">New Electronic Product</a>
+                  </li>
+				  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:update_electronics' %}">Update Electronic Product</a>
+                  </li>
+				  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:add_brand' %}">New Electronic Band</a>
+                  </li>
+				  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:add_electronics_category' %}">New Electronic Category</a>
+                  </li>
+				  
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home:all_books' %}">
+                <i class="menu-icon typcn typcn-shopping-bag"></i>
+                <span class="menu-title">See Current BookList</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home:all_electronics' %}">
+                <i class="menu-icon typcn typcn-th-large-outline"></i>
+                <span class="menu-title">See all electronic products</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home:all_orders' %}">
+                <i class="menu-icon typcn typcn-bell"></i>
+                <span class="menu-title">Orders</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="pages/icons/font-awesome.html">
+                <i class="menu-icon typcn typcn-user-outline"></i>
+                <span class="menu-title">Add Admins</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="pages/icons/font-awesome.html">
+                <i class="menu-icon typcn typcn-user-outline"></i>
+                <span class="menu-title">Logout</span>
+              </a>
+            </li>
 
-    {% block best_seller  %}
+          </ul>
+        </nav>
+		{% block actual_body %}
+		
+		<!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <!-- Page Title Header Starts-->
+            <div class="row page-title-header">
 
-    {% endblock %}
+              <div class="col-md-12">
+                <div class="page-header-toolbar">
+
+                  <div class="sort-wrapper">
+                    <button type="button" class="btn btn-primary toolbar-item">Dashboard</button>
+                    <div class="dropdown ml-lg-auto ml-3 toolbar-item">
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Page Title Header Ends-->
+            <div class="row">
+              <div class="col-md-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+
+                      <div class="col-lg-3 col-md-6">
+                        <div class="d-flex">
+                          <div class="wrapper">
+                            <h3 class="mb-0 font-weight-semibold">{{no_of_comment}}</h3>
+                            <h5 class="mb-0 font-weight-medium text-primary">Comments</h5>
+                          </div>
+                          <div class="wrapper my-auto ml-auto ml-lg-4">
+                            <canvas height="50" width="100" id="stats-line-graph-1"></canvas>
+                          </div>
+
+                        </div>
+                      </div>
+
+
+                      <div class="col-lg-3 col-md-6 mt-md-0 mt-4">
+                        <div class="d-flex">
+                          <div class="wrapper">
+
+                            <h3 class="mb-0 font-weight-semibold">{{no_of_rating}}</h3>
+                            <h5 class="mb-0 font-weight-medium text-primary">Ratings</h5>
+
+                          </div>
+                          <div class="wrapper my-auto ml-auto ml-lg-4">
+                            <canvas height="50" width="100" id="stats-line-graph-2"></canvas>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title mb-0">Sales Statistics Overview</h4>
+
+                    <div class="d-flex flex-column flex-lg-row">
+                      <div class="data-wrapper d-flex mt-2 mt-lg-0">
+
+                        <div class="wrapper">
+                          <h5 class="mb-0">Total Revenue</h5>
+                          <div class="d-flex align-items-center">
+                            <h4 class="font-weight-semibold mb-0">{{revenue}}</h4>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="ml-lg-auto" id="sales-statistics-legend"></div>
+                    </div>
+                    <canvas class="mt-5" height="120" id="sales-statistics-overview"></canvas>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="row">                 
+                 
+                  <div class="col-md-6 grid-margin stretch-card">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="d-flex align-items-center pb-2">
+                              <div class="dot-indicator bg-danger mr-2"></div>
+                              <p class="mb-0">Total Sales</p>
+                            </div>
+                            <h4 class="font-weight-semibold">$7,590</h4>
+                            <div class="progress progress-md">
+                              <div class="progress-bar bg-danger" role="progressbar" style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="78"></div>
+                            </div>
+                          </div>                        
+                        </div>
+                      </div>
+                    </div>
+					<div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title mb-0">Top Performer</h4>
+                        <div class="d-flex mt-3 py-2 border-bottom">
+                          <img class="img-sm rounded-circle" src="assets/images/faces/face3.jpg" alt="profile image">
+                          <div class="wrapper ml-2">
+                            <p class="mb-n1 font-weight-semibold">Ray Douglas</p>
+                            <small>162543</small>
+                          </div>
+                          <small class="text-muted ml-auto">1 Hours ago</small>
+                        </div>
+                        <div class="d-flex py-2 border-bottom">
+                          <span class="img-sm rounded-circle bg-warning text-white text-avatar">OH</span>
+                          <div class="wrapper ml-2">
+                            <p class="mb-n1 font-weight-semibold">Ora Hill</p>
+                            <small>162543</small>
+                          </div>
+                          <small class="text-muted ml-auto">4 Hours ago</small>
+                        </div>
+                        <div class="d-flex py-2 border-bottom">
+                          <img class="img-sm rounded-circle" src="assets/images/faces/face4.jpg" alt="profile image">
+                          <div class="wrapper ml-2">
+                            <p class="mb-n1 font-weight-semibold">Brian Dean</p>
+                            <small>162543</small>
+                          </div>
+                          <small class="text-muted ml-auto">4 Hours ago</small>
+                        </div>
+                        <div class="d-flex pt-2">
+                          <span class="img-sm rounded-circle bg-success text-white text-avatar">OB</span>
+                          <div class="wrapper ml-2">
+                            <p class="mb-n1 font-weight-semibold">Olive Bridges</p>
+                            <small>162543</small>
+                          </div>
+                          <small class="text-muted ml-auto">7 Hours ago</small>
+                        </div>
+                      </div>
+                    </div>
+					
+                  </div>
+                  
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-12 grid-margin">
+					
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title mb-0">Recent Events</h4>
+                    <div class="d-flex py-2 border-bottom">
+                      <div class="wrapper">
+                        <small class="text-muted">Mar 14, 2019</small>
+                        <p class="font-weight-semibold text-gray mb-0">Change in Directors</p>
+                      </div>
+                      <small class="text-muted ml-auto">Edit event</small>
+                    </div>
+                    <div class="d-flex py-2 border-bottom">
+                      <div class="wrapper">
+                        <small class="text-muted">Mar 14, 2019</small>
+                        <p class="font-weight-semibold text-gray mb-0">Other Events</p>
+                      </div>
+                      <small class="text-muted ml-auto">Edit event</small>
+                    </div>
+                    <div class="d-flex py-2 border-bottom">
+                      <div class="wrapper">
+                        <small class="text-muted">Mar 14, 2019</small>
+                        <p class="font-weight-semibold text-gray mb-0">Quarterly Report</p>
+                      </div>
+                      <small class="text-muted ml-auto">Edit event</small>
+                    </div>
+                    <div class="d-flex pt-2">
+                      <div class="wrapper">
+                        <small class="text-muted">Mar 14, 2019</small>
+                        <p class="font-weight-semibold text-gray mb-0">Change in Directors</p>
+                      </div>
+                      <small class="text-muted ml-auto">Edit event</small>
+                    </div>
+                    <a class="d-block mt-5" href="#">Show all</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between pb-3">
+                      <h4 class="card-title mb-0">Activities</h4>
+                      <p class="mb-0 text-muted">20 finished, 5 remaining</p>
+                    </div>
+                    <ul class="timeline">
+                      <li class="timeline-item">
+                        <p class="timeline-content"><a href="#">Ben Tossell</a> assign you a task</p>
+                        <p class="event-time">Just now</p>
+                      </li>
+                      <li class="timeline-item">
+                        <p class="timeline-content"><a href="#">Ben Tossell</a> assign you a task</p>
+                        <p class="event-time">Just now</p>
+                      </li>
+                      <li class="timeline-item">
+                        <p class="timeline-content"><a href="#">Ben Tossell</a> assign you a task</p>
+                        <p class="event-time">Just now</p>
+                      </li>
+                      <li class="timeline-item">
+                        <p class="timeline-content"><a href="#">Ben Tossell</a> assign you a task</p>
+                        <p class="event-time">Just now</p>
+                      </li>
+                      <li class="timeline-item">
+                        <p class="timeline-content"><a href="#">Ben Tossell</a> assign you a task</p>
+                        <p class="event-time">Just now</p>
+                      </li>
+                    </ul>
+                    <a class="d-block mt-3" href="#">Show all</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title mb-0">People Also Watch</h4>
+                    <div class="table-responsive">
+                      <table class="table table-stretched">
+                        <thead>
+                          <tr>
+                            <th>Symbol</th>
+                            <th>Last Price</th>
+                            <th>Change</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <p class="mb-1 text-dark font-weight-medium">NFLX</p><small class="font-weight-medium">Netflix, Inc.</small>
+                            </td>
+                            <td class="font-weight-medium">$250.00</td>
+                            <td class="text-success font-weight-medium">+12.64</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p class="mb-1 text-dark font-weight-medium">TSLA</p><small class="font-weight-medium">Tesla, Inc.</small>
+                            </td>
+                            <td class="font-weight-medium">$458.00</td>
+                            <td class="text-danger font-weight-medium">-14.53</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p class="mb-1 text-dark font-weight-medium">GOOG</p><small class="font-weight-medium">Alphabet, Inc.</small>
+                            </td>
+                            <td class="font-weight-medium">$250.00</td>
+                            <td class="text-danger font-weight-medium">+12.64</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p class="mb-1 text-dark font-weight-medium">AMZN</p><small class="font-weight-medium">Amazon.com, Inc.</small>
+                            </td>
+                            <td class="font-weight-medium">$546.00</td>
+                            <td class="text-success font-weight-medium">+24.34</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <a class="d-block mt-3" href="#">Show all</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          
+          <!-- partial -->
+        </div>
+	</div>
+
+
+		{% endblock %}
+		
+		
+		{% block body_block %}
+		{% endblock %}
+
+
+<!-- Feature Start-->
+        <div class="feature">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fab fa-cc-mastercard"></i>
+                            <h2>Secure Payment</h2>
+                            <p>
+                                Pay cash on delivery
+								Pay cash at your doorstep
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fa fa-truck"></i>
+                            <h2>Delivery</h2>
+                            <p>
+                                All over Bangladesh
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fa fa-sync-alt"></i>
+                            <h2>30 Days Return</h2>
+                            <p>
+                                All over Bangladesh
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 feature-col">
+                        <div class="feature-content">
+                            <i class="fa fa-comments"></i>
+                            <h2>24/7 Support</h2>
+                            <p>
+                                Help: 16297
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Feature End-->      
+
+		
+		<!-- Footer Start -->
+        <div class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Get in Touch</h2>
+                            <div class="contact-info">
+                                <p><i class="fa fa-map-marker"></i>2/1/E, Arambag, Eden Center, Motijheel, Dhaka-1000</p>
+                                <p><i class="fa fa-envelope"></i>admin@rokomari.com</p>
+                                <p><i class="fa fa-phone"></i>+8801708166238, +8801708166239, +8801708166242</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Follow Us</h2>
+                            <div class="contact-info">
+                                <div class="social">
+                                    <a href=""><i class="fab fa-twitter"></i></a>
+                                    <a href="https://www.facebook.com/rokomari/"><i class="fab fa-facebook-f"></i></a>
+                                    <a href=""><i class="fab fa-linkedin-in"></i></a>
+                                    <a href=""><i class="fab fa-instagram"></i></a>
+                                    <a href=""><i class="fab fa-youtube"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Company Info</h2>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms & Condition</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-widget">
+                            <h2>Purchase Info</h2>
+                            <ul>
+                                <li><a href="#">Pyament Policy</a></li>
+                                <li><a href="#">Shipping Policy</a></li>
+                                <li><a href="#">Return Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row payment align-items-center">
+                    <div class="col-md-6">
+                        <div class="payment-method">
+                            <h2>We Accept:</h2>
+                            <img src="{% static "home/img/payment-method.png" %}" alt="Payment Method" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="payment-security">
+                            <h2>Secured By:</h2>
+                            <img src="{% static "home/img/godaddy.svg" %}" alt="Payment Security" />
+                            <img src="{% static "home/img/norton.svg" %}" alt="Payment Security" />
+                            <img src="{% static "home/img/ssl.svg" %}" alt="Payment Security" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        <!-- Footer Bottom Start -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="company-summery-row">
+                    <div class="d-flex justify-content-center">
+                        <div class="col copyright">
+                            <p>
+                                Rokomari.com is now one of the leading e-commerce organizations in Bangladesh. It is indeed the biggest online bookshop or bookstore in Bangladesh that helps you save time and money. You can buy books online with a few clicks or a convenient phone call. With breathtaking discounts and offers you can buy anything from Bangla Upannash or English story books to academic, research or competitive exam books. Superfast cash on delivery service brings the products at your doorstep. Our customer support, return and replacement policies will surely add extra confidence in your online shopping experience. Happy Shopping with Rokomari.com!
+                            </p>
+                        </div>
+                    </div>
+                        <div class="col copyright">
+                            <p class="text-center"> © 2012-2020 Rokomari.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Bottom End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'home/lib/easing/easing.min.js' %}"></script>
+        <script src="{% static 'home/lib/slick/slick.min.js' %}"></script>
+		
+		<!-- container-scroller -->
+		<!-- plugins:js -->
+		<script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+		<script src="{% static 'assets/vendors/js/vendor.bundle.addons.js' %}"></script>
+		<!-- endinject -->
+		<!-- Plugin js for this page-->
+		<!-- End plugin js for this page-->
+		<!-- inject:js -->
+		<script src="{% static 'assets/js/shared/off-canvas.js' %}"></script>
+		<script src="{% static 'assets/js/shared/misc.js' %}"></script>
+		<!-- endinject -->
+		<!-- Custom js for this page-->
+		<script src="{% static 'assets/js/demo_1/dashboard.js' %}"></script>
+
+        <!-- Template Javascript -->
+        <script src="{% static 'home/js/main.js' %}"></script>
+    </body>
+</html>
+
+
+

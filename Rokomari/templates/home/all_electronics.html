@@ -1,0 +1,46 @@
+{% extends "home/admin.html" %}
+{% load static %}
+
+    {% block actual_body %}
+    {% endblock %}
+
+
+    {% block body_block %}
+		<div class="product-view">
+            <div class="container-fluid">
+                <div class="row"> 
+					<div class="col-lg-9">
+                        <div class="row">
+						{% if electronics %}
+							{% for item in electronics %}
+								<div class="col-lg-3">
+                        <div class="product-item">
+                            <div class="product-title">
+                                <a href="#">{{ item.TITLE }}</a>
+								
+                                <div class="ratting">
+                                   {% for i in item.star_list %}
+                                           <i class="fa fa-star"></i>
+                                   {% endfor %}
+                                </div>
+                            </div>
+                            <div class="product-image">                              
+                                  <img src="{{ item.IMAGE_SRC }}" alt="Product Image">                                                   
+                            </div>
+                            <div class="product-price">
+                                <h3><span>Price : </span>{{ item.PRICE }}</h3>															
+                                <a class="btn" href={% url 'home:electronics:electronics_details' item.ID %}><i></i>Details</a>
+                            </div>
+                        </div>
+                    </div>
+							{% endfor %}
+						{% endif %}                  
+                </div>
+            </div>
+        </div>
+		
+    {% endblock %}
+
+    {% block best_seller  %}
+
+    {% endblock %}

@@ -123,6 +123,54 @@ def max_electronics_category_id():
     else:
         return res[0][0]
 
+def max_book_id():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT MAX(TO_NUMBER(ID)) FROM BOOK ''')
+    res = cursor.fetchall()
+    conn.close()
+    if isinstance(res[0][0], type(None)):
+        return 0
+    else:
+        return res[0][0]
+
+def max_author_id():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT MAX(TO_NUMBER(ID)) FROM AUTHOR ''')
+    res = cursor.fetchall()
+    conn.close()
+    if isinstance(res[0][0], type(None)):
+        return 0
+    else:
+        return res[0][0]
+
+def max_publisher_id():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT MAX(TO_NUMBER(ID)) FROM PUBLISHER ''')
+    res = cursor.fetchall()
+    conn.close()
+    if isinstance(res[0][0], type(None)):
+        return 0
+    else:
+        return res[0][0]
+
+def max_book_category_id():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT MAX(TO_NUMBER(ID)) FROM "BOOK CATEGORY" ''')
+    res = cursor.fetchall()
+    conn.close()
+    if isinstance(res[0][0], type(None)):
+        return 0
+    else:
+        return res[0][0]
+
 def max_cart_id(product_id):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -450,6 +498,28 @@ def authenticate(username, password):
             return True
     return False
 
+
+def is_admin(username, password):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''SELECT * FROM "MYSELF"."USER" WHERE NAME=:username''', [username])
+    row = dict_fetch_all(cursor)
+    conn.close()
+    #print(row)
+    for user in row:
+        salt = binascii.a2b_hex(user['SALT'])
+        key = binascii.a2b_hex(user['KEY'])
+        new_key = binascii.b2a_hex(hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000))
+        print(username)
+        print(key)
+        print(binascii.b2a_hex(new_key))
+        if key == new_key and row[0]['TYPES'] == 'A':
+            print('ok')
+            return True
+    return False
+
+
 def check_username(username):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -590,6 +660,50 @@ def get_orders_of_this_user(userid):
     return f_list
 
 
+def get_all_orders():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        select ID from MYSELF."USER"
+        '''
+    )
+    res = dict_fetch_all(cursor)
+    conn.close()
+    user_ids=[]
+    #print(res)
+    #print("as")
+    for i in res:
+        user_ids.append(i['ID'])
+    #print(user_ids)
+    orders=[]
+    """orders list is to store all the orders"""
+    for id in user_ids:
+        ord_of_id  = get_orders_of_this_user(id)
+        for ord in ord_of_id:
+            orders.append(ord)
+    print(orders[0])
+    return orders
+
+
+def update_order_status(order_id):
+    st  ='Delivered'
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        update MYSELF."ORDER HISTORY"
+        set STATUS = :st
+        where ID = :order_id
+        ''',[st , order_id]
+    )
+    conn.commit()
+    conn.close()
+
+
+
 def get_star_list(stars):
     for star in star_list:
         if len(star) == stars:
@@ -684,6 +798,8 @@ def get_electronics_category_id(category_name):
     res = dict_fetch_all(cursor)
     return res[0]['ID']
 
+
+"""Admin page related"""
 def adding_electronics( title, model, price, image_src, description, warranty, brand_id, category_id, number_of_items_added):
     dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
@@ -758,3 +874,163 @@ def adding_electronics_category(name, description, image_src):
                 )''', [id, name, description, image_src])
         conn.commit()
     conn.close()
+
+def add_new_book_category(name , description):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''
+                SELECT * FROM "BOOK CATEGORY" WHERE NAME =: name''',
+                   [name])
+    res = dict_fetch_all(cursor)
+    if len(res) == 0:
+        id = max_book_category_id() + 1
+        cursor.execute('''
+                        INSERT INTO "BOOK CATEGORY" VALUES ( :id, :name, :description
+                        )''', [id, name, description])
+        conn.commit()
+
+    conn.close()
+
+def add_new_author(name , profile):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''
+                    SELECT * FROM "AUTHOR" WHERE NAME =: name''',
+                   [name])
+    res = dict_fetch_all(cursor)
+    if len(res) == 0:
+        id = max_author_id() + 1
+        cursor.execute('''
+                            INSERT INTO "AUTHOR" VALUES ( :id, :name, :profile
+                            )''', [id, name, profile])
+        conn.commit()
+
+    conn.close()
+
+def add_publisher(name , phone_number , web_url , email , address):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''
+                    SELECT * FROM "PUBLISHER" WHERE NAME =: name''',
+                   [name])
+    res = dict_fetch_all(cursor)
+    if len(res) == 0:
+        id = max_publisher_id() + 1
+        cursor.execute('''
+                            INSERT INTO "PUBLISHER" VALUES ( :id, :name, :phone_number , :web_url,
+                            :email , :address
+                            )''', [id, name, phone_number , web_url , email , address])
+        conn.commit()
+
+    conn.close()
+
+
+def add_new_book(isbn , title , edition , no_of_pages , country  ,language , price , image_src , summary , author , category , publisher , stock , sales_cnt=0):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute('''
+                    SELECT * FROM "BOOK" WHERE TITLE =: title''',
+                   [title])
+    res = dict_fetch_all(cursor)
+    print(title)
+    if len(res) == 0:
+        print("as")
+        """If no author/ctg , they will be inserted"""
+        author_id = get_author_id(author)
+        pub_id = get_publisher_id(publisher)
+        ctg_id = get_book_ctg_id(category)
+        if(author_id==-1):
+            add_new_author(author , "good")
+            print(author)
+        if(ctg_id==-1):
+            add_new_book_category(category , "good one")
+
+        id = max_book_id() + 1
+        print(title)
+        cursor.execute('''
+                                INSERT INTO "BOOK" VALUES ( :id, :isbn, :title,
+                                :edition , :no_of_pages , :country , :language , 
+                                :price , :image_src , :summary , :author_id , :ctg_id , :pub_id , 
+                                :stock , :sales_cnt)''', [id, isbn , title , edition , no_of_pages,
+                                                          country , language , price , image_src ,
+                                                          summary , author_id , ctg_id , pub_id ,
+                                                          stock , sales_cnt])
+        conn.commit()
+    conn.close()
+def get_author_id(name):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''select ID from MYSELF.AUTHOR where NAME=:name
+        ''', [name]
+    )
+    res = dict_fetch_all(cursor)
+    conn.close()
+    if(len(res)>0):
+        return res[0]['ID']
+    else:
+        return -1
+
+def get_publisher_id(name):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''select ID from MYSELF.PUBLISHER where NAME =: name
+        ''',[name]
+    )
+    res = dict_fetch_all(cursor)
+    conn.close()
+    if(len(res)>0):
+        return res[0]['ID']
+    else:
+        return -1
+
+def get_book_ctg_id(name):
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''select ID from MYSELF."BOOK CATEGORY" where NAME =: name
+        ''',[name]
+    )
+    res = dict_fetch_all(cursor)
+    conn.close()
+    if (len(res) > 0):
+        return res[0]['ID']
+    else:
+        return -1
+
+def get_comment_rating_cnts():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        select COUNT(c.ID) as ccnt  from MYSELF."COMMENT" c
+        '''
+    )
+    res1 = dict_fetch_all(cursor)
+
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        select COUNT(r.ID) as rcnt  from MYSELF."RATING" r
+        '''
+    )
+    res2 = dict_fetch_all(cursor)
+    print(res2)
+    if (len(res1) > 0) and (len(res2) > 0):
+        return res1[0]['CCNT'] , res2[0]['RCNT']
+        #, res[0]['rcnt']
+    else:
+        return 0,0
+
+
+if __name__ == "__main__":
+    get_all_orders()

@@ -1,0 +1,61 @@
+{% extends "home/admin.html" %}
+{% load static %}
+
+    {% block actual_body %}
+    {% endblock %}
+
+
+    {% block body_block %}
+		<div class="product-view">
+            <div class="container-fluid">
+                <div class="row"> 
+					<div class="col-lg-10">
+                        <div class="row">
+							
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Product</th>
+                                                <th>Date</th>
+                                                <th>Total Price</th>
+                                                <th>Status</th>
+												<th>Is Delivered</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+											{% for od in all_orders %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{od.product.0.1}}</td>
+                                                <td>{{od.time}}</td>
+                                                <td>{{od.total_price}}</td>
+                                                <td>{{od.status}}</td>
+												<td style="text-align: center; vertical-align: middle">
+												{% if not od.status == 'Delivered' %}
+													<form method="POST">
+													{% csrf_token %}
+													  
+													  <input type="hidden"  name="kotono" value="{{forloop.counter}}">
+													  <input type="submit" class="fadeIn fourth" value="Delivered">
+												  </form>
+												{% endif %}
+												</td>
+                                            </tr>
+											{% endfor %}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            
+						</div>
+					</div>
+				</div>
+		
+		
+    {% endblock %}
+
+    {% block best_seller  %}
+
+    {% endblock %}

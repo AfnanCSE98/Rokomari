@@ -79,3 +79,37 @@ class AddElectronicsCategoryForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
     description = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
     image_src = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+
+class Addbook_Form(forms.Form):
+    ISBN = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Title = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Edition = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    No_of_Pages = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Country = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Language = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Price = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Image_src = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Summary = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Author = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Category = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Publisher = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    Stock = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class AddAuthor_Form(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    profile = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class AddPublisher_Form(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    phone_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    web_url = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    address = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class AddCategory_Form(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+    description = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
+
+class DeliveredForm(forms.Form):
+    delivered = forms.BooleanField()
