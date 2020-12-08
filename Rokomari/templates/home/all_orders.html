@@ -9,15 +9,16 @@
 		<div class="product-view">
             <div class="container-fluid">
                 <div class="row"> 
-					<div class="col-lg-10">
+					<div class="col-lg-11">
                         <div class="row">
 							
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead class="thead-dark">
                                             <tr>
-                                                <th>No</th>
-                                                <th>Product</th>
+                                                
+                                                <th>Order ID</th>
+												<th>Products</th>
                                                 <th>Date</th>
                                                 <th>Total Price</th>
                                                 <th>Status</th>
@@ -27,16 +28,18 @@
                                         <tbody>
 											{% for od in all_orders %}
                                             <tr>
-                                                <td>{{forloop.counter}}</td>
-                                                <td>{{od.product.0.1}}</td>
+                                                
+                                                <td>{{od.order_id}}</td>
+												<td style="text-align: center; vertical-align: middle">
+													{% for i in od.product %}
+													{{ i.1 }} <br>
+													{% endfor %}
                                                 <td>{{od.time}}</td>
                                                 <td>{{od.total_price}}</td>
                                                 <td>{{od.status}}</td>
 												<td style="text-align: center; vertical-align: middle">
 												{% if not od.status == 'Delivered' %}
-													<form method="POST">
-													{% csrf_token %}
-													  
+													<form method="POST">{% csrf_token %}																									  
 													  <input type="hidden"  name="kotono" value="{{forloop.counter}}">
 													  <input type="submit" class="fadeIn fourth" value="Delivered">
 												  </form>

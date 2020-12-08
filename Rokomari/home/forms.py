@@ -111,5 +111,3 @@ class AddCategory_Form(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
     description = forms.CharField(widget=forms.TextInput(attrs={'class': 'input-group'}))
 
-class DeliveredForm(forms.Form):
-    delivered = forms.BooleanField()

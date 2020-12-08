@@ -200,8 +200,13 @@ def admin(request):
     x,y =  get_comment_rating_cnts()
     dict['no_of_comment'] = x
     dict['no_of_rating']  = y
-    print(dict)
-
+    x , y = total_sale()
+    dict['total_sale'] = x + y
+    dict['book_sale'] = x
+    dict['elec_sale'] = y
+    dict['top_customers'] = top_customer()
+    dict['total_revenue'] = x + y + 10000
+    print(dict['top_customers'])
     return render(request, 'home/admin.html', dict)
 
 def add_electronics(request):
@@ -677,7 +682,9 @@ def all_electronics(request):
 
     return render(request, 'home/all_electronics.html', dict)
 
+from django.views.decorators.csrf import csrf_protect
 
+@csrf_protect
 def all_orders(request):
     dict = {}
     dict['username'] = request.session.get('username')
@@ -692,7 +699,7 @@ def all_orders(request):
 
     orders = get_all_orders()
     dict['all_orders'] = orders
-    dict['form'] = DeliveredForm()
+    #dict['form'] = DeliveredForm()
 
     #form = DeliveredForm(request.POST or None)
     if request.method == 'POST' :

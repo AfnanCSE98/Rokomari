@@ -4,6 +4,7 @@ import os
 import binascii
 THRESHOLD = int(1e6)
 star_list = ['', '*', '**', '***', '****', '*****']
+from operator import itemgetter
 
 def dict_fetch_all(cursor):
     """
@@ -666,7 +667,7 @@ def get_all_orders():
     cursor = conn.cursor()
     cursor.execute(
         '''
-        select ID from MYSELF."USER"
+        select ID from MYSELF."USER" WHERE TYPES='C'
         '''
     )
     res = dict_fetch_all(cursor)
@@ -684,6 +685,7 @@ def get_all_orders():
         for ord in ord_of_id:
             orders.append(ord)
     print(orders[0])
+    orders = sorted(orders , key=itemgetter('order_id') )
     return orders
 
 
@@ -1032,5 +1034,74 @@ def get_comment_rating_cnts():
         return 0,0
 
 
-if __name__ == "__main__":
-    get_all_orders()
+def total_sale():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    delivered = 'Delivered'
+    cursor.execute('''
+    SELECT NVL(SUM(TO_NUMBER((SELECT PRICE FROM BOOK B WHERE B.ID = BC."BOOK ID"))* TO_NUMBER(BC."BOOK QUANTITY")), 0) TOTAL
+    FROM "BOOK CART" BC
+    JOIN "ORDER HISTORY" OH
+    ON(BC."ORDER ID" = OH.ID)
+    WHERE OH.STATUS =: delivered 
+    ''', [delivered])
+    res1 = dict_fetch_all(cursor)
+    cursor.execute('''
+    SELECT NVL(SUM(TO_NUMBER((SELECT PRICE FROM ELECTRONICS E WHERE E.ID = EC."ELECTRONICS ID"))* TO_NUMBER(EC."ELECTRONICS QUANTITY")), 0) TOTAL
+    FROM "ELECTRONICS CART" EC
+    JOIN "ORDER HISTORY" OH
+    ON(EC."ORDER ID" = OH.ID)
+    WHERE OH.STATUS =: delivered
+    ''', [delivered])
+    res2 = dict_fetch_all(cursor)
+    conn.close()
+    return res1[0]['TOTAL'] , res2[0]['TOTAL']
+
+
+
+def top_customer():
+    dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='ORCLPDB')
+    conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
+    cursor = conn.cursor()
+    delivered = 'Delivered'
+    cursor.execute('''
+    SELECT OH."USER ID" ID, (SELECT NAME FROM "USER" WHERE ID = OH."USER ID") NAME, NVL(SUM(TO_NUMBER((SELECT PRICE FROM BOOK B WHERE B.ID = BC."BOOK ID"))* TO_NUMBER(BC."BOOK QUANTITY")), 0) TOTAL
+    FROM "BOOK CART" BC
+    JOIN "ORDER HISTORY" OH
+    ON(BC."ORDER ID" = OH.ID)
+    WHERE OH.STATUS =: delivered
+    GROUP BY OH."USER ID"
+    ORDER BY TOTAL DESC''', [delivered])
+    res1 = dict_fetch_all(cursor)
+    cursor.execute('''
+    SELECT OH."USER ID" ID, (SELECT NAME FROM "USER" WHERE ID = OH."USER ID") NAME, NVL(SUM(TO_NUMBER((SELECT PRICE FROM ELECTRONICS E WHERE E.ID = EC."ELECTRONICS ID"))* TO_NUMBER(EC."ELECTRONICS QUANTITY")), 0) TOTAL
+    FROM "ELECTRONICS CART" EC
+    JOIN "ORDER HISTORY" OH
+    ON(EC."ORDER ID" = OH.ID)
+    WHERE OH.STATUS =: deliverd
+    GROUP BY OH."USER ID"
+    ORDER BY TOTAL DESC''', [delivered])
+    res2 = dict_fetch_all(cursor)
+    res = {}
+    res3 = {}
+    print(res1)
+    print(res2)
+    for item in res1:
+        res[item['NAME']] = 0
+        res3[item['NAME']] = item['ID']
+        res[item['NAME']] += int(item['TOTAL'])
+    for item in res2:
+        if item['NAME'] in res:
+            res[item['NAME']] += int(item['TOTAL'])
+        else:
+            res[item['NAME']] = 0
+            res3[item['NAME']] = item['ID']
+            res[item['NAME']] += int(item['TOTAL'])
+    lst = []
+    #lst is tuple of total expense and name and id of the customer
+    for key in res:
+        lst.append((res[key], key, res3[key]))
+    lst.sort(reverse=True)
+    conn.close()
+    return lst
