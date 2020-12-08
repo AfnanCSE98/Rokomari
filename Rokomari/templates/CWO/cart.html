@@ -1,7 +1,8 @@
 {% extends "home/home.html" %}
 {% load static %}
 
-
+    {% block sliding_block %}
+    {% endblock %}
     {% block body_block%}
 
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
@@ -13,29 +14,37 @@
             </div>
         </div>
         {% if cart %}
+            <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                <div class="table-responsive">
             <form action="{% url 'home:CWO:order' %}" method = 'get'>
-            <table style="width: 100%">
+            <table class="table table-bordered">
+            <thead class="thead-dark">
             <tr>
                 <th>Title</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th></th>
             </tr>
+            </thead>
+            <tbody>
             {% for  id, title, price, quantity in cart %}
                 <tr>
                     <td>{{ title }}</td>
                     <td>{{ price }}</td>
                     <td><input type="number" value=1 min=1 name = {{ id }} ></td>
-                    <td><a href={% url 'home:CWO:delete_cart_item' id%}> Remove From Cart </a> </td>
+                    <td><a class="btn" href={% url 'home:CWO:delete_cart_item' id%}> Remove From Cart </a> </td>
                 </tr>
             {% endfor %}
-                <tr>
-                    <td>Total</td>
-                    <td>{{ total }}</td>
-                </tr>
+            </tbody>
             </table>
             <br><input class="btn btn-primary" type="submit" value="Order"/>
             </form>
+                </div>
+            </div>
+            </div>
+            </div>
         {% elif not cart %}
             <div class="featured-product product">
                     <div class="container-fluid">

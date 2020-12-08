@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <div class="product-content">
-                                        <div class="title"><h2>{{ theElectronics.title }}</h2></div>
+                                        <div class="title"><h1>{{ theElectronics.title }}</h1></div>
 										<div class="ratting">
                                             {% for i in theElectronics.star_list %}
                                                 <i class="fa fa-star"></i>
@@ -180,9 +180,21 @@
 										<div class="price">
                                             <h4>Price: </h4>
                                             <p>{{ theElectronics.price }} Tk</p>
-                                        </div>							                                                                                                             
+                                        </div>
+                                        <div class="price">
+                                            <h4>STATUS : </h4>
+                                            {% if theElectronics.stock > 0 %}
+                                                <p>IN STOCK</p>
+                                            {% else %}
+                                                <p>OUT OF STOCK</p>
+                                            {% endif %}
+                                        </div>
                                         <div class="action">
-                                            <a class="btn" href="{% url 'home:CWO:add_to_cart' theElectronics.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            {% if theElectronics.stock > 0 %}
+                                                <a class="btn" href="{% url 'home:CWO:add_to_cart' theElectronics.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            {% else %}
+                                                <a class="btn" href="#"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            {% endif %}
                                             <a class="btn" href="{% url 'home:CWO:add_to_wishlist' theElectronics.id%}"><i class="fa fa-shopping-bag"></i>Add to WishList</a>
                                         </div>									
 										
@@ -194,7 +206,10 @@
 
 						<div class="row product-detail-bottom">
                             <div class="col-lg-12">
-                                <ul class="nav nav-pills nav-justified">                                  
+                                <ul class="nav nav-pills nav-justified">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="pill" href="#description">Description</a>
+                                    </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-toggle="pill" href="#specification">Specification</a>
                                     </li>
@@ -203,7 +218,14 @@
                                     </li>
                                 </ul>
 
-                                <div class="tab-content">                                   
+                                <div class="tab-content">
+                                    <div id="description" class="container tab-pane active">
+                                        <p>
+											{% if theElectronics.description %}
+											{{ theElectronics.description }}
+											{% endif %}
+										</p>
+                                    </div>
                                     <div id="specification" class="container tab-pane fade">
                                         <div class="price">
                                             <h4>Brand : {{ theElectronics.brand }}</h4>

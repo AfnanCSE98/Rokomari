@@ -155,7 +155,7 @@ def electronics_details(request, electronics_id):
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
     customer_id = request.session.get('id')
-    cursor.execute('''SELECT TITLE, PRICE, DESCRIPTION, WARRANTY, MODEL, STOCK, 
+    cursor.execute('''SELECT TITLE, PRICE, DESCRIPTION, WARRANTY, MODEL, STOCK, DESCRIPTION, 
                             (SELECT  NAME FROM BRAND B WHERE B.ID = E."BRAND ID") "BRAND NAME",
                             (SELECT  NAME FROM "ELECTRONICS CATEGORY" C WHERE C.ID = E."CATEGORY ID") "CATEGORY NAME",
                             GET_AVERAGE_ELECTRONICS_RATING(ID) "AVERAGE RATING",
@@ -180,7 +180,8 @@ def electronics_details(request, electronics_id):
     electronics['comments'] = get_comment(electronics_id)
     electronics['image'] = res[0]['IMAGE_SRC']
     electronics['model'] = res[0]['MODEL']
-    electronics['stock'] = res[0]['STOCK']
+    electronics['stock'] = int(res[0]['STOCK'])
+    electronics['description'] = res[0]['DESCRIPTION']
     if not isinstance(electronics['averageRating'], type(None)):
         electronics['star_list'] = get_star_list(int(electronics['averageRating']))
     if not isinstance(electronics['userRating'], type(None)):

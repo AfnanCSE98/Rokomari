@@ -1,6 +1,8 @@
 {% extends "home/home.html" %}
 {% load static %}
 
+     {% block sliding_block %}
+    {% endblock %}
     {% block body_block%}
 
     <link rel="stylesheet" href="{% static "books/css/style.css" %}">
@@ -12,13 +14,20 @@
             </div>
         </div>
         {% if specificOrder %}
-            <table style="width: 100%">
+            <div class="featured-product product">
+            <div class="container-fluid">
+                <div class="section-header">
+                <div class="table-responsive">
+            <table class="table table-bordered">
+            <thead class="thead-dark">
             <tr>
                 <th>Title</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th></th>
             </tr>
+            </thead>
+            <tbody>
             {% for id, title, price, quantity in specificOrder %}
                 <tr>
                     <td>{{ title }}</td>
@@ -30,19 +39,24 @@
                     <td>Total</td>
                     <td>{{ total }}</td>
                 </tr>
+            </tbody>
             </table>
-            <br>
-            <p>
-            Status : {{ status }}
-            </p>
+                </div>
+
+            <div class="price">
+                <h4>Status : {{ status }}</h4>
+            </div>
         {% elif not specificOrder %}
             <p>Nothing is Ordered</p>
         {% endif %}
         <br>
         <br>
-        <h3><a href={% url 'home:home' %}>Return to Homepage </a></h3>
+        <h2><a href={% url 'home:home' %}>Return to Homepage </a></h2>
         <br>
         <br>
+        </div>
+        </div>
+        </div>
     {% endblock %}
 
     {% block best_seller  %}

@@ -230,7 +230,7 @@ def book_details(request, book_id):
     conn = cx_Oracle.connect(user='MYSELF', password='123', dsn=dsn_tns)
     cursor = conn.cursor()
     customer_id = request.session.get('id')
-    cursor.execute('''SELECT ISBN, TITLE, EDITION, "NO OF PAGES", LANGUAGE, PRICE, STOCK,
+    cursor.execute('''SELECT ISBN, TITLE, EDITION, "NO OF PAGES", LANGUAGE, PRICE, STOCK, SUMMARY,
                         (SELECT NAME FROM AUTHOR A WHERE A.ID = B."AUTHOR ID") "AUTHOR NAME", 
                         (SELECT  NAME FROM PUBLISHER P WHERE P.ID = B."PUBLISHER ID") "PUBLISHER NAME",
                         (SELECT  NAME FROM "BOOK CATEGORY" C WHERE C.ID = B."CATEGORY ID") "CATEGORY NAME",
@@ -246,7 +246,7 @@ def book_details(request, book_id):
 
     book = {}
     book['isbn'] = res[0]['ISBN']
-    book['stock'] = res[0]['STOCK']
+    book['stock'] = int(res[0]['STOCK'])
     book['title'] = res[0]['TITLE']
     book['edition'] = res[0]['EDITION']
     book['pages'] = res[0]['NO OF PAGES']
@@ -260,6 +260,7 @@ def book_details(request, book_id):
     book['userRating'] = res[0]['USER RATING']
     book['comments'] = get_comment(book_id)
     book['image'] = res[0]['IMAGE_SRC']
+    book['summary'] = res[0]['SUMMARY']
     if not isinstance(book['averageRating'], type(None)) and book['averageRating'] != '-1':
         book['star_list'] = get_star_list(int(book['averageRating']))
     if not isinstance(book['userRating'], type(None)):

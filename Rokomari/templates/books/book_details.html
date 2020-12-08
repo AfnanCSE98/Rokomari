@@ -170,7 +170,7 @@
                                 </div>
                                 <div class="col-md-7">
                                     <div class="product-content">
-                                        <div class="title"><h2>{{ theBook.title }}</h2></div>
+                                        <div class="title"><h1>{{ theBook.title }}</h1></div>
                                         <div class="ratting">
                                             {% for i in theBook.star_list %}
                                                 <i class="fa fa-star"></i>
@@ -178,23 +178,31 @@
                                         </div>
 										<div class="price">
                                             <h4>Publisher: </h4>
-                                            {{ theBook.publisher }}
+                                            <p>{{ theBook.publisher }}</p>
                                         </div>
 										<div class="price">
                                             <h4>Author: </h4>
-                                            {{ theBook.author }}
+                                            <p>{{ theBook.author }}</p>
                                         </div>
 										<div class="price">
                                             <h4>Price: </h4>
                                             <p>{{ theBook.price }} Tk</p>
                                         </div>
-										<div class="quantity">
-                                            <h4>IN Stock: </h4>
-                                            <h4>{{theBook.stock}}</h4>
+										<div class="price">
+                                            <h4>STATUS : </h4>
+                                            {% if theBook.stock > 0 %}
+                                                <p>IN STOCK</p>
+                                            {% else %}
+                                                <p>OUT OF STOCK</p>
+                                            {% endif %}
                                         </div>  
 																				                                                                                                                 
                                         <div class="action">
-                                            <a class="btn" href="{% url 'home:CWO:add_to_cart' theBook.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            {% if theBook.stock > 0 %}
+                                                <a class="btn" href="{% url 'home:CWO:add_to_cart' theBook.id%}"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            {% else %}
+                                                <a class="btn" href="#"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
+                                            {% endif %}
                                             <a class="btn" href="{% url 'home:CWO:add_to_wishlist' theBook.id%}"><i class="fa fa-shopping-bag"></i>Add to WishList</a>
                                         </div>									
 																												
@@ -221,15 +229,15 @@
 
                                 <div class="tab-content">
                                     <div id="description" class="container tab-pane active">
-                                        <h4>Product description</h4>
                                         <p>
 											{% if theBook.summary %}
 											{{ theBook.summary }}
+                                            {% else %}
+                                                বই আপনাকে অতীত, বর্তমান ও ভবিষ্যতে সকল কালে নিয়ে যেতে পাওে, যে দেশে যাওয়ার আপনার কোন দিন সম্ভাবনা নেই, বইয়ের রথে চেপে আপনি অনায়াসে সে দেশে যেতে পারেন
 											{% endif %}
 										</p>
                                     </div>
                                     <div id="specification" class="container tab-pane fade">
-                                        <h4>Product specification</h4>                                       
 										 ISBN : {{ theBook.isbn}}
 										<br>Edition : {{ theBook.edition }}
 										<br>Pages : {{ theBook.pages }}
