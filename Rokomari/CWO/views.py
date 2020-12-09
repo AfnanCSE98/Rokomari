@@ -58,7 +58,7 @@ def add_to_cart(request, product_id):
     cursor = conn.cursor()
     quantity = 1
     order_id = 1
-    id = int(max_cart_id(product_id)) + 1;
+    id = int(max_cart_id(product_id)) + 1
     customer_id = request.session.get('id')
     if int(product_id) < THRESHOLD:
         """
@@ -71,8 +71,12 @@ def add_to_cart(request, product_id):
                                 VALUES( :id, :customer_id, :product_id, :quantity, :order_id)
                                 ''', [id, customer_id, product_id, quantity, order_id])
         """
+        print(id, end=' ')
+        print(customer_id, end=' ')
+        print(product_id, end=' ')
+        print(order_id, end=' ')
+        print(quantity)
         cursor.callproc('ADD_TO_BOOK_CART', [id, customer_id, product_id, order_id, quantity])
-
     else:
         """
         cursor.execute('''SELECT * FROM "MYSELF"."ELECTRONICS CART" WHERE "ELECTRONICS ID" =: product_id AND "USER ID" =: customer_id 

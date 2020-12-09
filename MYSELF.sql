@@ -11,7 +11,7 @@
  Target Server Version : 190000
  File Encoding         : 65001
 
- Date: 09/12/2020 15:54:56
+ Date: 10/12/2020 05:47:06
 */
 
 
@@ -111,7 +111,7 @@ INSERT INTO "MYSELF"."BOOK" VALUES ('2', '0', 'নির্বাচিত প�
 INSERT INTO "MYSELF"."BOOK" VALUES ('3', '0', 'উন্নয়ন কার জন্য', '1', '0', NULL, 'Bangla', '225', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/cee5331eb_30758.jpg', NULL, '1000001', '3', '100001', '10', '0');
 INSERT INTO "MYSELF"."BOOK" VALUES ('4', '0', 'অধিকারভিত্তিক উন্নয়ন', '2', '0', NULL, 'Bangla', '275', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/c8bdb50ef_30761.jpg', NULL, '1000001', '4', '100001', '10', '0');
 INSERT INTO "MYSELF"."BOOK" VALUES ('5', '0', 'মানবিক ব্যাংকিং', '2', '0', NULL, 'Bangla', '450', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/ae2739468_78184.jpg', NULL, '1000001', '5', '100001', '10', '0');
-INSERT INTO "MYSELF"."BOOK" VALUES ('6', '95800000', 'তব ভুবনে তব ভবনে', '1', '360', NULL, 'Bangla', '600', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/06002d85a_93467.jpg', NULL, '1000001', '6', '100001', '10', '0');
+INSERT INTO "MYSELF"."BOOK" VALUES ('6', '95800000', 'তব ভুবনে তব ভবনে', '1', '360', NULL, 'Bangla', '600', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/06002d85a_93467.jpg', NULL, '1000001', '6', '100001', '7', '3');
 INSERT INTO "MYSELF"."BOOK" VALUES ('7', '59000000', 'বুনে গেলাম আশার স্বপন-গভর্নরের দিনলিপি (মে ২০০৯-মার্চ ২০১৬)', '1', '832', NULL, 'Bangla', '1500', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/9b845dd7e0b4_133603.jpg', NULL, '1000001', '7', '100001', '10', '0');
 INSERT INTO "MYSELF"."BOOK" VALUES ('8', '0', 'নির্বাচিত প্রবন্ধ', '1', '0', NULL, 'Bangla', '200', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/f22316e5b_30720.jpg', NULL, '1000003', '2', '100001', '9', '1');
 INSERT INTO "MYSELF"."BOOK" VALUES ('9', '0', 'নির্বাচিত প্রবন্ধ', '1', '0', NULL, 'Bangla', '275', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/260X372/eb379125e_30752.jpg', NULL, '1000005', '2', '100001', '7', '3');
@@ -180,7 +180,7 @@ INSERT INTO "MYSELF"."BOOK CART" VALUES ('8', '3', '12', '8', '10');
 INSERT INTO "MYSELF"."BOOK CART" VALUES ('9', '3', '13', '8', '10');
 INSERT INTO "MYSELF"."BOOK CART" VALUES ('10', '3', '16', '8', '10');
 INSERT INTO "MYSELF"."BOOK CART" VALUES ('11', '3', '15', '8', '10');
-INSERT INTO "MYSELF"."BOOK CART" VALUES ('25', '5', '1', '1', '1');
+INSERT INTO "MYSELF"."BOOK CART" VALUES ('25', '5', '6', '23', '3');
 INSERT INTO "MYSELF"."BOOK CART" VALUES ('21', '2', '20', '14', '1');
 
 -- ----------------------------
@@ -358,10 +358,12 @@ INSERT INTO "MYSELF"."COMMENT" VALUES ('20', '3', '1', NULL, 'nice boi', TO_DATE
 INSERT INTO "MYSELF"."COMMENT" VALUES ('21', '3', '12', NULL, 'noise boi', TO_DATE('2020-11-28 07:27:36', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."COMMENT" VALUES ('22', '3', '3', NULL, 'Nice book', TO_DATE('2020-11-28 11:35:29', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."COMMENT" VALUES ('23', '3', '7', NULL, 'valo boi', TO_DATE('2020-12-06 13:07:04', 'SYYYY-MM-DD HH24:MI:SS'));
+INSERT INTO "MYSELF"."COMMENT" VALUES ('24', '5', '21', NULL, 'good book', TO_DATE('2020-12-10 05:15:34', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."COMMENT" VALUES ('6', '3', '3', NULL, 'Good book ', TO_DATE('2020-11-22 13:22:25', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."COMMENT" VALUES ('7', '3', '15', NULL, 'nice book', TO_DATE('2020-11-22 13:23:11', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."COMMENT" VALUES ('8', '3', '19', NULL, 'Recomended to read it', TO_DATE('2020-11-22 13:23:48', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."COMMENT" VALUES ('9', '3', '13', NULL, 'Good biography by the author', TO_DATE('2020-11-22 13:26:20', 'SYYYY-MM-DD HH24:MI:SS'));
+INSERT INTO "MYSELF"."COMMENT" VALUES ('25', '5', '6', NULL, 'good book', TO_DATE('2020-12-10 05:38:07', 'SYYYY-MM-DD HH24:MI:SS'));
 
 -- ----------------------------
 -- Table structure for ELECTRONICS
@@ -418,7 +420,7 @@ INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000014', 'ADATA ULTIMATE SU 800S SS
 INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000015', 'Asus Graphics Card nVIDIA Chipset MATRIX-GTX980-P-4GD5 ', 'NVIDIA GeForce GTX 980', '67000', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/rokimg_20150610_100840.gif', ' PCI Express 3.0 ;11.7 "" x 6 "" x 1.6 "" Inch 29.72 x 15.2 x4.06 Centimeter ; GPU Boost Clock : 1342 MHz GPU Base Clock : 1241 MHz', '3', '1000006', '3', '10', '0');
 INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000016', 'Asus Graphics Card AMD Chipset R9290X-4GD5', 'AMD Radeon R9 290X', '46000', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/rokimg_20150412_98715.gif', 'PCI Express 3.0 ; 10.9 " x 4.3 " x 1.4 " Inch ;1000 MHz', '2', '1000006', '3', '10', '0');
 INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000017', 'অন্যরকম বিজ্ঞানবাক্স (রকমারি কালেকশন)', NULL, '5536', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/5c6ff209e_110775.jpg', 'Odvot Mapjokh ; Rashayon Rohosho ; Torith Tandob etc', '0', '1000007', '1', '8', '2');
-INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000018', 'শব্দকল্প', NULL, '1490', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/58f833cb0_155446.jpg', 'নিজে নিজে এক্সপেরিমেন্টগুলি করার ফলে তার মধ্যে এক ধরণের আত্মবিশ্বাস তৈরি হবে এবং সে বিজ্ঞানের সৌন্দর্য উপলব্ধি করতে সক্ষম হবে।', '0', '1000007', '1', '10', '0');
+INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000018', 'শব্দকল্প', NULL, '1490', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/58f833cb0_155446.jpg', 'নিজে নিজে এক্সপেরিমেন্টগুলি করার ফলে তার মধ্যে এক ধরণের আত্মবিশ্বাস তৈরি হবে এবং সে বিজ্ঞানের সৌন্দর্য উপলব্ধি করতে সক্ষম হবে।', '0', '1000007', '1', '8', '2');
 INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000019', 'Golden Field Speaker LA-121D (4:1)', 'LA 121D', '3100', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/rokimg_20151030_106150.gif', 'USB or SD or FM with Remote', '1', '1000008', '10', '7', '3');
 INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000020', 'A4 Tech LAPTOP SPEAKER (P-200)', 'P-200', '1200', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/rokimg_20150331_98768.gif', 'System Requirements: Windows 2000 / XP / 2003 / Vista / Windows 7', '1', '1000008', '9', '10', '0');
 INSERT INTO "MYSELF"."ELECTRONICS" VALUES ('1000021', 'Rapoo Bluetooth Headset (S500)', 'S500', '2500', 'https://s3-ap-southeast-1.amazonaws.com/rokomari110/ProductNew20190903/260X372/a3e40cb0e_187663.jpg', 'Aluminium alloy trimming ; COM-Ti Membrane Vibrating Technology', '1', '1000009', '7', '10', '0');
@@ -476,10 +478,10 @@ INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('15', '3', '1000028', '19', '1')
 INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('19', '5', '1000019', '22', '2');
 INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('13', '3', '1000027', '17', '3');
 INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('14', '3', '1000012', '18', '1');
+INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('21', '5', '1000018', '23', '2');
 INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('16', '3', '1000022', '21', '3');
 INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('17', '3', '1000018', '1', '1');
 INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('18', '3', '1000008', '1', '1');
-INSERT INTO "MYSELF"."ELECTRONICS CART" VALUES ('20', '5', '1000002', '1', '1');
 
 -- ----------------------------
 -- Table structure for ELECTRONICS CATEGORY
@@ -602,6 +604,7 @@ INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('16', '3', 'Pending', TO_DATE('2020
 INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('18', '3', 'Pending', TO_DATE('2020-12-06 13:13:53', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('19', '3', 'Delivered', TO_DATE('2020-12-06 13:16:54', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('22', '5', 'Pending', TO_DATE('2020-12-09 14:29:25', 'SYYYY-MM-DD HH24:MI:SS'));
+INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('23', '5', 'Pending', TO_DATE('2020-12-10 05:40:02', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('1', '1', 'undetermined', TO_DATE('2020-11-21 21:32:15', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('9', '2', 'Pending', TO_DATE('2020-11-22 20:22:37', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."ORDER HISTORY" VALUES ('17', '3', 'Delivered', TO_DATE('2020-11-28 09:45:34', 'SYYYY-MM-DD HH24:MI:SS'));
@@ -724,12 +727,15 @@ INSERT INTO "MYSELF"."RATING" VALUES ('55', '3', '12', NULL, '4', TO_DATE('2020-
 INSERT INTO "MYSELF"."RATING" VALUES ('56', '3', NULL, '1000000', '4', TO_DATE('2020-11-28 07:29:51', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('59', '3', NULL, '1000024', '3', TO_DATE('2020-11-28 07:51:07', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('60', '3', NULL, '1000003', '3', TO_DATE('2020-11-28 07:54:53', 'SYYYY-MM-DD HH24:MI:SS'));
+INSERT INTO "MYSELF"."RATING" VALUES ('72', '5', NULL, '1000028', '3', TO_DATE('2020-12-10 05:38:57', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('19', '3', '14', NULL, '5', TO_DATE('2020-11-23 07:19:18', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('61', '3', '3', NULL, '3', TO_DATE('2020-11-28 11:35:12', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('69', '3', NULL, '1000022', '1', TO_DATE('2020-12-08 14:35:20', 'SYYYY-MM-DD HH24:MI:SS'));
+INSERT INTO "MYSELF"."RATING" VALUES ('70', '5', '21', NULL, '3', TO_DATE('2020-12-10 05:15:21', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('9', '3', '11', NULL, '3', TO_DATE('2020-11-21 23:07:34', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('12', '3', '15', NULL, '3', TO_DATE('2020-11-22 13:23:04', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('14', '3', '13', NULL, '3', TO_DATE('2020-11-22 13:26:01', 'SYYYY-MM-DD HH24:MI:SS'));
+INSERT INTO "MYSELF"."RATING" VALUES ('71', '5', '6', NULL, '3', TO_DATE('2020-12-10 05:37:58', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('23', '2', '5', NULL, '5', TO_DATE('2020-11-26 22:38:04', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('63', '3', '4', NULL, '3', TO_DATE('2020-12-06 13:37:10', 'SYYYY-MM-DD HH24:MI:SS'));
 INSERT INTO "MYSELF"."RATING" VALUES ('64', '3', '5', NULL, '1', TO_DATE('2020-12-06 13:37:22', 'SYYYY-MM-DD HH24:MI:SS'));
@@ -789,7 +795,9 @@ BEGIN
 	SELECT NVL(COUNT(*), 0) INTO CNT
 	FROM "BOOK CART"
 	WHERE "BOOK ID" = book_id
-	AND "USER ID" = user_id;
+	AND "USER ID" = user_id
+	AND "ORDER ID" = order_id;
+	DBMS_OUTPUT.PUT_LINE(CNT);
 	IF CNT <= 0 THEN
 		 INSERT INTO "BOOK CART"
      VALUES( id, user_id, book_id, order_id, book_quantity);
@@ -807,7 +815,8 @@ BEGIN
 	SELECT NVL(COUNT(*), 0) INTO CNT
 	FROM "ELECTRONICS CART"
 	WHERE "ELECTRONICS ID" = electronics_id
-	AND "USER ID" = user_id;
+	AND "USER ID" = user_id
+	AND "ORDER ID" = order_id;
 	IF CNT <= 0 THEN
 		 INSERT INTO "ELECTRONICS CART"
      VALUES( id, user_id, electronics_id, order_id, electronics_quantity);
