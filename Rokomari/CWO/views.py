@@ -61,6 +61,7 @@ def add_to_cart(request, product_id):
     id = int(max_cart_id(product_id)) + 1;
     customer_id = request.session.get('id')
     if int(product_id) < THRESHOLD:
+        """
         cursor.execute('''SELECT * FROM "MYSELF"."BOOK CART" WHERE "BOOK ID" =: product_id AND "USER ID" =: customer_id 
                         AND "ORDER ID" =: order_id''', { 'product_id' : product_id, 'customer_id' : customer_id, 'order_id' : order_id})
         res = dict_fetch_all(cursor)
@@ -69,7 +70,11 @@ def add_to_cart(request, product_id):
                                 INSERT INTO "MYSELF"."BOOK CART"("ID", "USER ID", "BOOK ID", "BOOK QUANTITY", "ORDER ID")
                                 VALUES( :id, :customer_id, :product_id, :quantity, :order_id)
                                 ''', [id, customer_id, product_id, quantity, order_id])
+        """
+        cursor.callproc('ADD_TO_BOOK_CART', [id, customer_id, product_id, order_id, quantity])
+
     else:
+        """
         cursor.execute('''SELECT * FROM "MYSELF"."ELECTRONICS CART" WHERE "ELECTRONICS ID" =: product_id AND "USER ID" =: customer_id 
                                 AND "ORDER ID" =: order_id''',
                        {'product_id': product_id, 'customer_id': customer_id, 'order_id': order_id})
@@ -79,6 +84,8 @@ def add_to_cart(request, product_id):
                                         INSERT INTO "MYSELF"."ELECTRONICS CART"("ID", "USER ID", "ELECTRONICS ID", "ELECTRONICS QUANTITY", "ORDER ID")
                                         VALUES( :id, :customer_id, :product_id, :quantity, :order_id)
                                         ''', [id, customer_id, product_id, quantity, order_id])
+        """
+        cursor.callproc('ADD_TO_ELECTRONICS_CART', [id, customer_id, product_id, order_id, quantity])
     conn.commit()
     conn.close()
     if int(product_id) < THRESHOLD:

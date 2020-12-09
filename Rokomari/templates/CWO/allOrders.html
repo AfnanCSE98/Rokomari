@@ -51,7 +51,13 @@
         </div>
             {% endfor %}
         {% elif not allOrderIDs %}
-            <p>Nothing is Ordered</p>
+            <div class="featured-product product">
+                    <div class="container-fluid">
+                         <div class="section-header">
+                            <p>Nothing is ordered</p>
+                         </div>
+                     </div>
+            </div>
         {% endif %}
             <br>
             <br>

@@ -25,3 +25,34 @@ EXCEPTION
 	WHEN NO_DATA_FOUND THEN
 		RETURN NULL;
 END;
+
+CREATE OR REPLACE PROCEDURE ADD_TO_BOOK_CART(id IN VARCHAR2, user_id IN VARCHAR2, book_id IN VARCHAR2,  order_id IN VARCHAR2, book_quantity IN VARCHAR2) IS
+	CNT NUMBER;
+BEGIN
+	SELECT NVL(COUNT(*), 0) INTO CNT
+	FROM "BOOK CART"
+	WHERE "BOOK ID" = book_id
+	AND "USER ID" = user_id;
+	IF CNT <= 0 THEN
+		 INSERT INTO "BOOK CART"
+     VALUES( id, user_id, book_id, order_id, book_quantity);
+		 COMMIT;
+	END IF;
+END;
+	
+	
+	
+CREATE OR REPLACE PROCEDURE ADD_TO_ELECTRONICS_CART(id IN VARCHAR2, user_id IN VARCHAR2, electronics_id IN VARCHAR2,  order_id IN VARCHAR2, electronics_quantity IN VARCHAR2) IS
+	CNT NUMBER;
+BEGIN
+	SELECT NVL(COUNT(*), 0) INTO CNT
+	FROM "ELECTRONICS CART"
+	WHERE "ELECTRONICS ID" = electronics_id
+	AND "USER ID" = user_id;
+	IF CNT <= 0 THEN
+		 INSERT INTO "ELECTRONICS CART"
+     VALUES( id, user_id, electronics_id, order_id, electronics_quantity);
+		 COMMIT;
+	END IF;
+END;
+	
